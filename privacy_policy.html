@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Sam's Logistics</title>
+    <meta name="description" content="Privacy Policy for Sam's Logistics - Learn how we collect, protect, and process your personal data for shipping from the UK to Ghana and Jamaica.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sams-blue': '#002654',
+                        'sams-gold': '#FFB81C',
+                        'sams-light-blue': '#0072CE',
+                    },
+                    fontFamily: {
+                        'sans': ['Open Sans', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
+                        'script': ['Brush Script MT', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        html { scroll-behavior: smooth; }
+        @media (max-width: 767px) {
+            body { padding-bottom: 4rem; }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen selection:bg-sams-gold selection:text-sams-blue">
+
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <!-- Top Contact Bar -->
+        <div class="bg-sams-gold text-sams-blue">
+            <div class="max-w-7xl mx-auto py-2 px-4 text-xs sm:text-sm font-semibold flex flex-row justify-between items-center w-full">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <span class="inline-flex items-center"><i class="fa-solid fa-shield-halved mr-1 text-xs"></i> <span class="hidden xs:inline">Fast, Reliable, Affordable</span><span class="xs:hidden">Reliable Shipping</span></span>
+            </div>
+            <div class="hidden sm:block flex-1 min-w-0 mx-3 overflow-hidden text-center whitespace-nowrap" aria-live="polite">
+                <span class="welcome-marquee inline-block">SAM'S LOGISTICS Welcomes you!</span>
+            </div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="tel:07432294414" class="hover:text-white transition-colors duration-200 flex items-center min-h-[36px] px-1">
+                    <i class="fa-solid fa-phone mr-1"></i> <span>07432294414</span>
+                </a>
+                <a href="https://wa.me/447432294414" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="hover:text-white transition-colors duration-200 flex items-center min-h-[36px] px-1">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-row justify-between items-center h-20 md:h-24">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-3 p-2 sm:p-3">
+                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
+                </a>
+
+                <div class="hidden md:flex flex-row items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Home</a>
+                    <a href="index.html#services" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Services</a>
+                    <a href="index.html#supplies" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Supplies</a>
+                    <a href="index.html#tracking" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Track Parcel</a>
+                    <a href="tel:07432294414" class="bg-sams-blue text-white px-6 py-3 rounded-full font-bold hover:bg-sams-light-blue hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-headset mr-2"></i> Contact Us
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="text-sams-blue hover:text-sams-light-blue focus:outline-none p-3 rounded-lg active:bg-gray-100 flex items-center justify-center min-w-[48px] min-h-[48px]">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl left-0 right-0 z-50 transition-all">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="index.html" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-house mr-3 text-sams-light-blue"></i> Home
+                </a>
+                <a href="index.html#services" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-concierge-bell mr-3 text-sams-light-blue"></i> Services
+                </a>
+                <a href="index.html#supplies" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-box-open mr-3 text-sams-light-blue"></i> Boxes & Barrels
+                </a>
+                <a href="index.html#tracking" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-location-dot mr-3 text-sams-light-blue"></i> Track Parcel
+                </a>
+                <div class="pt-2">
+                    <a href="tel:07432294414" class="flex items-center justify-center min-h-[50px] w-full bg-sams-blue text-white rounded-xl font-bold text-base shadow-md active:bg-sams-light-blue">
+                        <i class="fa-solid fa-phone mr-2 text-sams-gold"></i> Call 07432294414
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col w-full">
+        <section class="bg-sams-blue text-white py-12 sm:py-16 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
+                <div class="flex items-center justify-center sm:justify-start gap-2 text-sams-gold text-xs sm:text-sm font-bold uppercase tracking-wider mb-2">
+                    <a href="index.html" class="hover:underline">Home</a>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span>Legal</span>
+                </div>
+                <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">Privacy Policy</h1>
+                <p class="text-blue-100 text-sm sm:text-base mt-2 max-w-2xl">
+                    Last updated: January 2026. Learn how Sam's Logistics protects your personal information and respects your privacy.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-12 sm:py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-10 border border-gray-100 space-y-8 text-gray-700 leading-relaxed">
+                    
+                    <div>
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-shield-cat text-sams-light-blue"></i> 1. Introduction & Data Controller
+                        </h2>
+                        <p class="mb-3">
+                            Sam's Logistics ("we", "us", or "our") is committed to protecting and respecting your personal data. This Privacy Policy explains how we collect, use, store, disclose, and safeguard your personal information when you use our website or rely on our door-to-door shipping, air freight, sea freight, and packaging supply services from the United Kingdom to Ghana and Jamaica.
+                        </p>
+                        <p>
+                            For the purpose of the UK General Data Protection Regulation (UK GDPR) and the Data Protection Act 2018, Sam's Logistics is the Data Controller responsible for your personal data.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-database text-sams-light-blue"></i> 2. Information We Collect
+                        </h2>
+                        <p class="mb-3">We may collect and process the following categories of personal data:</p>
+                        <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base">
+                            <li><strong>Identity & Contact Details:</strong> Full name, telephone number, WhatsApp contact details, email address, UK pickup address, and destination delivery address in Ghana or Jamaica.</li>
+                            <li><strong>Consignee Details:</strong> Name, phone number, and physical delivery address of the package recipient.</li>
+                            <li><strong>Shipment Information:</strong> Parcel descriptions, declared values, tracking reference numbers, dimensions, weight, and customs declarations.</li>
+                            <li><strong>Payment Information:</strong> Billing records and payment status (we do not store credit or debit card details directly on our web servers).</li>
+                            <li><strong>Technical Data:</strong> IP addresses, browser types, and tracking queries submitted through our online tracking system.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-gears text-sams-light-blue"></i> 3. How We Use Your Information
+                        </h2>
+                        <p class="mb-3">Your personal data is used solely for legitimate business purposes, including:</p>
+                        <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base">
+                            <li>Arranging UK collection and international door-to-door shipping to Ghana and Jamaica.</li>
+                            <li>Facilitating international customs clearances and cargo documentation.</li>
+                            <li>Providing real-time track and trace status updates.</li>
+                            <li>Communicating regarding bookings, quotes, changes, or customer service queries via phone or WhatsApp.</li>
+                            <li>Complying with statutory customs, legal, and regulatory duties.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-handshake text-sams-light-blue"></i> 4. Sharing Your Personal Data
+                        </h2>
+                        <p class="mb-3">
+                            To deliver your cargo effectively across international borders, we may share relevant information with trusted third parties under strict confidentiality, including:
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base">
+                            <li><strong>Partner Logistics Carriers:</strong> Local courier networks, port handling staff, and delivery agents in Ghana and Jamaica.</li>
+                            <li><strong>Customs Authorities:</strong> HM Revenue & Customs (UK), Ghana Revenue Authority (GRA), and Jamaica Customs Agency as legally mandated for international import and export.</li>
+                            <li><strong>IT & Communication Providers:</strong> Messaging gateways (WhatsApp) and web hosting platforms to maintain tracking and communications.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-user-shield text-sams-light-blue"></i> 5. Your Legal Rights (UK GDPR)
+                        </h2>
+                        <p class="mb-3">Under data protection law, you have specific rights regarding your personal information:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm mt-4">
+                            <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-sams-blue mb-1"><i class="fa-solid fa-eye mr-2 text-sams-light-blue"></i> Right of Access</h4>
+                                <p class="text-xs text-gray-600">Request a copy of the personal data we hold about you.</p>
+                            </div>
+                            <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-sams-blue mb-1"><i class="fa-solid fa-pen-to-square mr-2 text-sams-light-blue"></i> Right to Rectification</h4>
+                                <p class="text-xs text-gray-600">Request correction of inaccurate or incomplete information.</p>
+                            </div>
+                            <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-sams-blue mb-1"><i class="fa-solid fa-trash-can mr-2 text-sams-light-blue"></i> Right to Erasure</h4>
+                                <p class="text-xs text-gray-600">Request deletion of personal data when no longer legally required.</p>
+                            </div>
+                            <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100">
+                                <h4 class="font-bold text-sams-blue mb-1"><i class="fa-solid fa-ban mr-2 text-sams-light-blue"></i> Right to Object</h4>
+                                <p class="text-xs text-gray-600">Object to processing based on direct marketing or legitimate interest.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-envelope-open-text text-sams-light-blue"></i> 6. Contact & Data Enquiries
+                        </h2>
+                        <p class="mb-3">
+                            If you have questions about this Privacy Policy or wish to exercise your legal rights, please contact our Data Protection Officer:
+                        </p>
+                        <div class="bg-sams-blue text-white p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h4 class="font-bold text-sams-gold text-lg">Sam's Logistics Data Office</h4>
+                                <p class="text-xs text-blue-100 mt-1"><i class="fa-solid fa-envelope mr-2"></i> info@samslogistics.co.uk</p>
+                                <p class="text-xs text-blue-100"><i class="fa-solid fa-phone mr-2"></i> 07432294414</p>
+                            </div>
+                            <a href="tel:07432294414" class="bg-sams-gold text-sams-blue font-bold px-5 py-2.5 rounded-full text-xs hover:bg-yellow-400 transition-colors shrink-0">
+                                Get In Touch
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-sams-blue text-white z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)] border-t-2 border-sams-gold flex flex-row items-center justify-around p-2">
+        <a href="tel:07432294414" class="flex flex-col items-center justify-center py-1 px-3 text-sams-gold active:scale-95 transition-transform min-h-[48px] w-1/2 border-r border-white/10">
+            <i class="fa-solid fa-phone text-lg mb-0.5"></i>
+            <span class="text-xs font-bold">Call Now</span>
+        </a>
+        <a href="https://wa.me/447432294414" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center py-1 px-3 text-green-400 active:scale-95 transition-transform min-h-[48px] w-1/2">
+            <i class="fa-brands fa-whatsapp text-xl mb-0.5"></i>
+            <span class="text-xs font-bold text-white">WhatsApp</span>
+        </a>
+    </div>
+
+    <footer class="bg-sams-blue text-white pt-12 sm:pt-16 pb-8 border-t-[10px] border-sams-gold relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="flex flex-col md:flex-row flex-wrap lg:flex-nowrap justify-between gap-10 mb-12">
+                
+                <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4 flex flex-col items-start">
+                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-24 w-auto object-contain mb-3">
+                    <p class="text-blue-100 text-xs sm:text-sm leading-relaxed mb-6">
+                        Providing fast, reliable, and affordable door-to-door shipping from the UK to Ghana and Jamaica.
+                    </p>
+                </div>
+
+                <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h4>
+                    <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
+                        <li><a href="index.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Home</a></li>
+                        <li><a href="index.html#services" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Services</a></li>
+                        <li><a href="index.html#supplies" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Buy Boxes & Barrels</a></li>
+                        <li><a href="index.html#tracking" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Track Parcel</a></li>
+                    </ul>
+                </div>
+
+                <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h4>
+                    <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
+                        <li><a href="privacy_policy.html" class="text-sams-gold font-bold inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Privacy Policy</a></li>
+                        <li><a href="disclaimer.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Disclaimer</a></li>
+                        <li><a href="legal_notice.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Legal Notice</a></li>
+                        <li><a href="imprint.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Imprint</a></li>
+                    </ul>
+                </div>
+
+                <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h4>
+                    <ul class="flex flex-col space-y-3 text-blue-100 text-xs sm:text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-map-location-dot mt-1 text-sams-gold"></i>
+                            <span>UK Headquarters<br>Logistics Hub, London, UK</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-sams-gold"></i>
+                            <a href="tel:07432294414" class="hover:text-white py-1">07432294414</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-xs sm:text-sm">
+                    &copy; <span id="current-year"></span> Sam's Logistics. All rights reserved.
+                </p>
+                <div class="text-2xl sm:text-3xl font-script text-sams-gold transform -rotate-1">
+                    "We deliver... You smile!"
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+
+            if(btn && menu) {
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                    const icon = btn.querySelector('i');
+                    if (menu.classList.contains('hidden')) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    } else {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-xmark');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

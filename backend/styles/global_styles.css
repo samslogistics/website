@@ -1,0 +1,72 @@
+html { scroll-behavior: smooth; }
+
+body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+}
+
+.hero-background {
+    background-image: url('https://placehold.co/1920x1080/002654/FFFFFF?text=Globe+Cargo+Ship+Airplane');
+    mix-blend-mode: luminosity;
+}
+
+.welcome-marquee {
+    animation: welcome-marquee 14s linear infinite;
+    will-change: transform, opacity;
+}
+
+.welcome-marquee:hover {
+    animation-play-state: paused;
+    color:azure;
+    cursor: pointer;
+}
+
+@keyframes welcome-marquee {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateX(-100%);
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .welcome-marquee {
+        animation: none;
+    }
+}
+
+.badge-polygon {
+    clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+.flag-icon {
+    font-size: 2.5rem;
+    line-height: 1;
+    filter: drop-shadow(0 4px 3px rgb(0 0 0 / 0.15));
+}
+
+/* Base state transition (smooth hover in & out) */
+.trust-item i {
+    transition: transform 0.3s ease;
+}
+
+/* Transform state on hover */
+.trust-item:hover i {
+    transform: scale(1.1) rotate(5deg);
+}
+
+@media (max-width: 767px) {
+    body {
+        padding-bottom: 4rem;
+    }
+}

@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disclaimer | Sam's Logistics</title>
+    <meta name="description" content="Disclaimer page for Sam's Logistics - Terms regarding freight liability, tracking estimates, custom clearances, and packaging responsibilities.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sams-blue': '#002654',
+                        'sams-gold': '#FFB81C',
+                        'sams-light-blue': '#0072CE',
+                    },
+                    fontFamily: {
+                        'sans': ['Open Sans', 'sans-serif'],
+                        'heading': ['Montserrat', 'sans-serif'],
+                        'script': ['Brush Script MT', 'cursive'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
+        }
+        html { scroll-behavior: smooth; }
+        @media (max-width: 767px) {
+            body { padding-bottom: 4rem; }
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen selection:bg-sams-gold selection:text-sams-blue">
+
+    <header class="bg-white shadow-md sticky top-0 z-40">
+        <!-- Top Contact Bar -->
+        <div class="bg-sams-gold text-sams-blue">
+            <div class="max-w-7xl mx-auto py-2 px-4 text-xs sm:text-sm font-semibold flex flex-row justify-between items-center w-full">
+            <div class="flex items-center gap-2 sm:gap-4">
+                <span class="inline-flex items-center"><i class="fa-solid fa-shield-halved mr-1 text-xs"></i> <span class="hidden xs:inline">Fast, Reliable, Affordable</span><span class="xs:hidden">Reliable Shipping</span></span>
+            </div>
+            <div class="hidden sm:block flex-1 min-w-0 mx-3 overflow-hidden text-center whitespace-nowrap" aria-live="polite">
+                <span class="welcome-marquee inline-block">SAM'S LOGISTICS Welcomes you!</span>
+            </div>
+            <div class="flex items-center gap-3 sm:gap-4">
+                <a href="tel:07432294414" class="hover:text-white transition-colors duration-200 flex items-center min-h-[36px] px-1">
+                    <i class="fa-solid fa-phone mr-1"></i> <span>07432294414</span>
+                </a>
+                <a href="https://wa.me/447432294414" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp" class="hover:text-white transition-colors duration-200 flex items-center min-h-[36px] px-1">
+                    <i class="fa-brands fa-whatsapp text-lg"></i>
+                </a>
+            </div>
+            </div>
+        </div>
+
+        <!-- Main Navigation -->
+        <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-row justify-between items-center h-20 md:h-24">
+                <a href="index.html" class="flex-shrink-0 flex items-center gap-3 p-2 sm:p-3">
+                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
+                </a>
+
+                <div class="hidden md:flex flex-row items-center space-x-8">
+                    <a href="index.html" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Home</a>
+                    <a href="index.html#services" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Services</a>
+                    <a href="index.html#supplies" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Supplies</a>
+                    <a href="index.html#tracking" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Track Parcel</a>
+                    <a href="tel:07432294414" class="bg-sams-blue text-white px-6 py-3 rounded-full font-bold hover:bg-sams-light-blue hover:shadow-lg transition-all duration-300 transform hover:-translate-y-0.5">
+                        <i class="fa-solid fa-headset mr-2"></i> Contact Us
+                    </a>
+                </div>
+
+                <div class="md:hidden flex items-center">
+                    <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="text-sams-blue hover:text-sams-light-blue focus:outline-none p-3 rounded-lg active:bg-gray-100 flex items-center justify-center min-w-[48px] min-h-[48px]">
+                        <i class="fa-solid fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl left-0 right-0 z-50 transition-all">
+            <div class="flex flex-col p-4 space-y-2">
+                <a href="index.html" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-house mr-3 text-sams-light-blue"></i> Home
+                </a>
+                <a href="index.html#services" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-concierge-bell mr-3 text-sams-light-blue"></i> Services
+                </a>
+                <a href="index.html#supplies" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-box-open mr-3 text-sams-light-blue"></i> Boxes & Barrels
+                </a>
+                <a href="index.html#tracking" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-semibold text-gray-700 hover:bg-gray-50 active:bg-gray-100">
+                    <i class="fa-solid fa-location-dot mr-3 text-sams-light-blue"></i> Track Parcel
+                </a>
+                <div class="pt-2">
+                    <a href="tel:07432294414" class="flex items-center justify-center min-h-[50px] w-full bg-sams-blue text-white rounded-xl font-bold text-base shadow-md active:bg-sams-light-blue">
+                        <i class="fa-solid fa-phone mr-2 text-sams-gold"></i> Call 07432294414
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex-grow flex flex-col w-full">
+        <section class="bg-sams-blue text-white py-12 sm:py-16 relative overflow-hidden">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
+                <div class="flex items-center justify-center sm:justify-start gap-2 text-sams-gold text-xs sm:text-sm font-bold uppercase tracking-wider mb-2">
+                    <a href="index.html" class="hover:underline">Home</a>
+                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                    <span>Legal</span>
+                </div>
+                <h1 class="font-heading font-black text-3xl sm:text-5xl text-white tracking-tight">Disclaimer</h1>
+                <p class="text-blue-100 text-sm sm:text-base mt-2 max-w-2xl">
+                    Important information regarding liability, tracking estimates, packaging responsibilities, and shipping limitations.
+                </p>
+            </div>
+        </section>
+
+        <section class="py-12 sm:py-16 bg-gray-50">
+            <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="bg-white rounded-3xl shadow-xl p-6 sm:p-10 border border-gray-100 space-y-8 text-gray-700 leading-relaxed">
+                    
+                    <div>
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-circle-exclamation text-sams-gold"></i> 1. Website Information Disclaimer
+                        </h2>
+                        <p class="mb-3">
+                            The information contained on this website is for general informational and booking purposes only. While Sam's Logistics endeavors to keep all information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, or reliability of rates, transit schedules, or service availability described on the site.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-plane-circle-exclamation text-sams-gold"></i> 2. Delivery Times & Shipping Estimates
+                        </h2>
+                        <p class="mb-3">
+                            All transit times, schedule dates, and delivery estimates provided by Sam's Logistics (whether for Air Freight or Sea Freight to Ghana and Jamaica) are estimates only and are not guaranteed.
+                        </p>
+                        <div class="bg-amber-50 border-l-4 border-sams-gold p-4 rounded-r-xl text-sm text-amber-900 my-4">
+                            <p class="font-bold"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Customs & Overseas Delays:</p>
+                            <p class="mt-1">Sam's Logistics cannot be held responsible for unexpected delays caused by HM Revenue & Customs, Ghana Revenue Authority, Jamaica Customs Agency, port congestion, adverse weather conditions, or airline freight re-routing.</p>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-box-tissue text-sams-gold"></i> 3. Packaging & Customer Responsibility
+                        </h2>
+                        <p class="mb-3">
+                            It is the sole responsibility of the sender to ensure that goods packaged inside boxes, barrels, or crates are properly padded, sealed, and suitable for international sea or air transport.
+                        </p>
+                        <ul class="list-disc pl-6 space-y-2 text-sm sm:text-base">
+                            <li>Fragile items (e.g. glass, electronics, liquids) must be declared and packed securely with protective bubble wrap.</li>
+                            <li>Prohibited and restricted items (flammables, hazardous chemicals, illegal contraband, firearms, unapproved currencies) must strictly NOT be packed.</li>
+                            <li>Sam's Logistics accepts no liability for damage caused to internal goods resulting from improper or inadequate customer packaging.</li>
+                        </ul>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-link text-sams-gold"></i> 4. External Links Disclaimer
+                        </h2>
+                        <p class="mb-3">
+                            Our website or digital materials may contain links to external third-party websites or services (such as official customs agencies or tracking provider tools) that are not provided or maintained by Sam's Logistics. We do not guarantee the accuracy or security of information on external platforms.
+                        </p>
+                    </div>
+
+                    <div class="border-t border-gray-100 pt-6">
+                        <h2 class="font-heading font-bold text-2xl text-sams-blue mb-4 flex items-center gap-3">
+                            <i class="fa-solid fa-headset text-sams-gold"></i> 5. Questions Regarding Shipping Terms
+                        </h2>
+                        <p class="mb-4">
+                            If you require specific clarification on cargo insurance options, prohibited items lists, or customs duties prior to booking your collection, please contact our team:
+                        </p>
+                        <div class="bg-sams-blue text-white p-6 rounded-2xl flex flex-col sm:flex-row items-center justify-between gap-4">
+                            <div>
+                                <h4 class="font-bold text-sams-gold text-lg">Customer Support Helpline</h4>
+                                <p class="text-xs text-blue-100 mt-1"><i class="fa-solid fa-phone mr-2"></i> 07432294414</p>
+                                <p class="text-xs text-blue-100"><i class="fa-solid fa-envelope mr-2"></i> info@samslogistics.co.uk</p>
+                            </div>
+                            <a href="tel:07432294414" class="bg-sams-gold text-sams-blue font-bold px-5 py-2.5 rounded-full text-xs hover:bg-yellow-400 transition-colors shrink-0">
+                                Call Us Directly
+                            </a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <div class="md:hidden fixed bottom-0 left-0 right-0 bg-sams-blue text-white z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)] border-t-2 border-sams-gold flex flex-row items-center justify-around p-2">
+        <a href="tel:07432294414" class="flex flex-col items-center justify-center py-1 px-3 text-sams-gold active:scale-95 transition-transform min-h-[48px] w-1/2 border-r border-white/10">
+            <i class="fa-solid fa-phone text-lg mb-0.5"></i>
+            <span class="text-xs font-bold">Call Now</span>
+        </a>
+        <a href="https://wa.me/447432294414" target="_blank" rel="noopener noreferrer" class="flex flex-col items-center justify-center py-1 px-3 text-green-400 active:scale-95 transition-transform min-h-[48px] w-1/2">
+            <i class="fa-brands fa-whatsapp text-xl mb-0.5"></i>
+            <span class="text-xs font-bold text-white">WhatsApp</span>
+        </a>
+    </div>
+
+    <footer class="bg-sams-blue text-white pt-12 sm:pt-16 pb-8 border-t-[10px] border-sams-gold relative overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
+            <div class="flex flex-col md:flex-row flex-wrap lg:flex-nowrap justify-between gap-10 mb-12">
+                
+                <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4 flex flex-col items-start">
+                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-24 w-auto object-contain mb-3">
+                    <p class="text-blue-100 text-xs sm:text-sm leading-relaxed mb-6">
+                        Providing fast, reliable, and affordable door-to-door shipping from the UK to Ghana and Jamaica.
+                    </p>
+                </div>
+
+                <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h4>
+                    <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
+                        <li><a href="index.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Home</a></li>
+                        <li><a href="index.html#services" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Services</a></li>
+                        <li><a href="index.html#supplies" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Buy Boxes & Barrels</a></li>
+                        <li><a href="index.html#tracking" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Track Parcel</a></li>
+                    </ul>
+                </div>
+
+                <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h4>
+                    <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
+                        <li><a href="privacy_policy.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Privacy Policy</a></li>
+                        <li><a href="disclaimer.html" class="text-sams-gold font-bold inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Disclaimer</a></li>
+                        <li><a href="legal_notice.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Legal Notice</a></li>
+                        <li><a href="imprint.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Imprint</a></li>
+                    </ul>
+                </div>
+
+                <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4">
+                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h4>
+                    <ul class="flex flex-col space-y-3 text-blue-100 text-xs sm:text-sm">
+                        <li class="flex items-start gap-3">
+                            <i class="fa-solid fa-map-location-dot mt-1 text-sams-gold"></i>
+                            <span>UK Headquarters<br>Logistics Hub, London, UK</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fa-solid fa-phone text-sams-gold"></i>
+                            <a href="tel:07432294414" class="hover:text-white py-1">07432294414</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+                <p class="text-blue-200 text-xs sm:text-sm">
+                    &copy; <span id="current-year"></span> Sam's Logistics. All rights reserved.
+                </p>
+                <div class="text-2xl sm:text-3xl font-script text-sams-gold transform -rotate-1">
+                    "We deliver... You smile!"
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            const btn = document.getElementById('mobile-menu-btn');
+            const menu = document.getElementById('mobile-menu');
+
+            if(btn && menu) {
+                btn.addEventListener('click', () => {
+                    menu.classList.toggle('hidden');
+                    const icon = btn.querySelector('i');
+                    if (menu.classList.contains('hidden')) {
+                        icon.classList.remove('fa-xmark');
+                        icon.classList.add('fa-bars');
+                    } else {
+                        icon.classList.remove('fa-bars');
+                        icon.classList.add('fa-xmark');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
