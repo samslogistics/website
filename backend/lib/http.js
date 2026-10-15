@@ -63,3 +63,40 @@ export function validBookingDate(value, now = new Date()) {
   const day = 24 * 60 * 60 * 1000;
   return d.getTime() >= now.getTime() - 2 * day && d.getTime() <= now.getTime() + 400 * day;
 }
+
+// ---- Supplies ordering ----
+export function generateOrderRef() {
+  let tail = '';
+  const bytes = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(bytes);
+  for (const b of bytes) tail += REF_ALPHABET[b % REF_ALPHABET.length];
+  return `SO-${tail}`;
+}
+
+// Admin price input (pounds) -> pence. Blank means "price on request" (null).
+// Accepts '12', '12.5', '12.50', '£12.50'. Returns { ok: false } for anything else.
+export function parsePricePence(value) {
+  if (value === undefined || value === null) return { ok: true, pence: null };
+  const raw = String(value).trim();
+  if (raw === '') return { ok: true, pence: null };
+  const s = raw.replace(/^£\s*/, '');
+  if (!/^\d{1,6}(\.\d{1,2})?$/.test(s)) return { ok: false };
+  return { ok: true, pence: Math.round(parseFloat(s) * 100) };
+}
+
+export const MAX_ORDER_LINES = 25;
+export const MAX_LINE_QTY = 500;
+
+// [{ id, quantity }] from the browser -> [{ id, qty }] with duplicates merged, or null if invalid.
+export function parseOrderLines(items) {
+  if (!Array.isArray(items) || items.length === 0 || items.length > MAX_ORDER_LINES) return null;
+  const merged = new Map();
+  for (const it of items) {
+    const id = Number(it?.id);
+    const qty = Number(it?.quantity);
+    if (!Number.isSafeInteger(id) || id < 1) return null;
+    if (!Number.isSafeInteger(qty) || qty < 1 || qty > MAX_LINE_QTY) return null;
+    merged.set(id, Math.min((merged.get(id) || 0) + qty, MAX_LINE_QTY));
+  }
+  return [...merged].map(([id, qty]) => ({ id, qty }));
+}

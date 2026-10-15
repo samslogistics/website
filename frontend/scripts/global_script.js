@@ -283,4 +283,181 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+    // --- Supplies shop (GET /api/supplies for the catalogue, POST /api/supplies to order) ---
+    const supplyForm = document.getElementById('supply-form');
+
+    if (supplyForm) {
+        const itemsBox = document.getElementById('supply-items');
+        const details = document.getElementById('supply-details');
+        const totalBox = document.getElementById('supply-total');
+        const supplyStatus = document.getElementById('supply-status');
+        const supplySubmit = document.getElementById('supply-submit');
+        const addressWrap = document.getElementById('supply-address-wrap');
+        const addressInput = document.getElementById('supply-address');
+        let catalogue = [];
+
+        const gbp = (pence) => '\u00A3' + (pence / 100).toFixed(2);
+
+        const make = (tag, className, text) => {
+            const node = document.createElement(tag);
+            if (className) node.className = className;
+            if (text !== undefined) node.textContent = text;
+            return node;
+        };
+
+        const setSupplyStatus = (message, type) => {
+            const colours = { error: 'text-red-600', success: 'text-green-700', info: 'text-gray-600' };
+            supplyStatus.className = 'text-center text-sm font-semibold ' + colours[type];
+            supplyStatus.textContent = message;
+        };
+
+        const quantityOf = (item) => {
+            const input = document.getElementById('supply-qty-' + item.id);
+            return input ? Math.floor(Number(input.value) || 0) : 0;
+        };
+        const chosen = () => catalogue.map((item) => ({ item, qty: quantityOf(item) })).filter((pick) => pick.qty > 0);
+
+        const updateTotal = () => {
+            const picks = chosen();
+            if (!picks.length) {
+                totalBox.classList.add('hidden');
+                return;
+            }
+            const count = picks.reduce((n, pick) => n + pick.qty, 0);
+            const allPriced = picks.every((pick) => pick.item.pricePence !== null);
+            totalBox.textContent = allPriced
+                ? `${count} item${count === 1 ? '' : 's'} selected. Estimated total: ${gbp(picks.reduce((sum, pick) => sum + pick.item.pricePence * pick.qty, 0))}. We confirm the final total before you pay.`
+                : `${count} item${count === 1 ? '' : 's'} selected. We will confirm the total price when we contact you.`;
+            totalBox.classList.remove('hidden');
+        };
+
+        const renderCatalogue = () => {
+            itemsBox.replaceChildren();
+            if (!catalogue.length) {
+                itemsBox.append(make('p', 'text-center text-gray-600 text-sm', 'Our online catalogue is being updated. Please call us to order supplies.'));
+                return;
+            }
+            const groups = new Map();
+            for (const item of catalogue) {
+                if (!groups.has(item.category)) groups.set(item.category, []);
+                groups.get(item.category).push(item);
+            }
+            for (const [category, list] of groups) {
+                const group = make('div', 'mb-6 last:mb-0');
+                group.append(make('h3', 'font-heading font-bold text-sams-blue text-lg mb-2', category));
+                const box = make('div', 'divide-y divide-gray-200 rounded-2xl border border-gray-200 bg-gray-50');
+                for (const item of list) {
+                    const row = make('div', 'flex items-center justify-between gap-4 px-4 py-3');
+                    const text = make('div', 'min-w-0');
+                    text.append(make('p', 'font-semibold text-gray-900', item.name));
+                    if (item.description) text.append(make('p', 'text-xs text-gray-500', item.description));
+                    text.append(make('p', 'text-sm font-semibold text-sams-light-blue mt-0.5',
+                        item.pricePence === null ? 'Price on request' : `${gbp(item.pricePence)} per ${item.unit}`));
+
+                    const label = make('label', 'shrink-0');
+                    label.append(make('span', 'sr-only', 'Quantity of ' + item.name));
+                    const input = make('input', 'w-20 min-h-[44px] rounded-xl border-2 border-gray-200 bg-white px-3 text-center text-gray-900 focus:border-sams-blue focus:outline-none focus:ring-2 focus:ring-sams-blue/20');
+                    input.type = 'number';
+                    input.id = 'supply-qty-' + item.id;
+                    input.min = '0';
+                    input.max = '500';
+                    input.step = '1';
+                    input.inputMode = 'numeric';
+                    input.setAttribute('value', '0'); // so form.reset() returns to 0
+                    input.value = '0';
+                    input.addEventListener('input', updateTotal);
+                    label.append(input);
+
+                    row.append(text, label);
+                    box.append(row);
+                }
+                group.append(box);
+                itemsBox.append(group);
+            }
+        };
+
+        const loadCatalogue = async () => {
+            try {
+                const res = await fetch('/api/supplies');
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) throw new Error(data.error || 'Request failed');
+                catalogue = Array.isArray(data.items) ? data.items : [];
+                renderCatalogue();
+                details.classList.toggle('hidden', catalogue.length === 0);
+            } catch (error) {
+                itemsBox.replaceChildren(make('p', 'text-center text-gray-600 text-sm', 'Products are temporarily unavailable. Please call us to order supplies.'));
+            }
+        };
+
+        // Only fetch the catalogue when the visitor gets near the section.
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) {
+                    observer.disconnect();
+                    loadCatalogue();
+                }
+            }, { rootMargin: '400px' });
+            observer.observe(supplyForm);
+        } else {
+            loadCatalogue();
+        }
+
+        const fulfilment = () => {
+            const checked = supplyForm.querySelector('input[name="supply-fulfilment"]:checked');
+            return checked ? checked.value : 'delivery';
+        };
+        const syncAddress = () => {
+            const delivery = fulfilment() === 'delivery';
+            addressWrap.classList.toggle('hidden', !delivery);
+            addressInput.required = delivery;
+        };
+        supplyForm.querySelectorAll('input[name="supply-fulfilment"]').forEach((radio) => radio.addEventListener('change', syncAddress));
+
+        supplyForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const picks = chosen();
+            if (!picks.length) {
+                setSupplyStatus('Please choose at least one item.', 'error');
+                return;
+            }
+            if (!supplyForm.reportValidity()) return;
+
+            const value = (id) => document.getElementById(id).value;
+            const payload = {
+                name: value('supply-name'),
+                phone: value('supply-phone'),
+                email: value('supply-email'),
+                fulfilment: fulfilment(),
+                address: value('supply-address'),
+                note: value('supply-note'),
+                items: picks.map((pick) => ({ id: pick.item.id, quantity: pick.qty })),
+                website: value('supply-website'),
+                consent: document.getElementById('supply-consent').checked,
+            };
+
+            supplySubmit.disabled = true;
+            setSupplyStatus('Sending your order...', 'info');
+
+            try {
+                const res = await fetch('/api/supplies', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    setSupplyStatus(data.error || 'Something went wrong. Please try again or call us.', 'error');
+                    return;
+                }
+                supplyForm.reset();
+                syncAddress();
+                updateTotal();
+                setSupplyStatus(`Thank you! Your order reference is ${data.reference}. We will contact you shortly to confirm your order and the total.`, 'success');
+            } catch (error) {
+                setSupplyStatus('Network error. Please check your connection and try again.', 'error');
+            } finally {
+                supplySubmit.disabled = false;
+            }
+        });
+    }
 });

@@ -65,6 +65,10 @@
                 <button id="tab-btn-requests" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">
                     Requests <span id="requests-badge" class="hidden ml-1 rounded-full bg-sams-gold text-sams-blue text-xs font-bold px-2 py-0.5"></span>
                 </button>
+                <button id="tab-btn-orders" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">
+                    Orders <span id="orders-badge" class="hidden ml-1 rounded-full bg-sams-gold text-sams-blue text-xs font-bold px-2 py-0.5"></span>
+                </button>
+                <button id="tab-btn-supplies" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">Supplies</button>
             </div>
 
             <div id="tab-shipments" class="grid lg:grid-cols-3 gap-6">
@@ -221,6 +225,137 @@
                         </div>
                         <p id="r-done" class="hidden border-t pt-4 text-sm text-gray-600"></p>
                     </div>
+                </aside>
+            </div>
+            <!-- Supply orders tab -->
+            <div id="tab-orders" class="hidden grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex flex-wrap items-center gap-3 justify-between">
+                        <h1 class="font-heading font-bold text-xl text-sams-blue">Supply orders</h1>
+                        <select id="order-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                            <option value="new">New</option>
+                            <option value="confirmed">Confirmed</option>
+                            <option value="completed">Completed</option>
+                            <option value="cancelled">Cancelled</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left text-gray-600">
+                                <tr>
+                                    <th class="px-4 py-3">Reference</th>
+                                    <th class="px-4 py-3">Customer</th>
+                                    <th class="px-4 py-3">Items</th>
+                                    <th class="px-4 py-3">Total</th>
+                                    <th class="px-4 py-3">Received</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="order-rows"></tbody>
+                        </table>
+                        <p id="order-empty" class="hidden p-6 text-center text-gray-500">No orders here.</p>
+                    </div>
+                </div>
+
+                <aside>
+                    <div id="order-panel-empty" class="bg-white rounded-2xl shadow p-6 text-gray-500 text-sm">
+                        Select an order to review it.
+                    </div>
+                    <div id="order-detail" class="hidden bg-white rounded-2xl shadow p-6 space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Order</p>
+                            <p id="o-ref" class="font-heading font-bold text-lg text-sams-blue break-all"></p>
+                            <p id="o-meta" class="text-sm text-gray-600"></p>
+                        </div>
+                        <dl id="o-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
+                        <div class="border-t pt-4">
+                            <h3 class="font-semibold text-sm mb-2">Items</h3>
+                            <ul id="o-lines" class="text-sm space-y-1"></ul>
+                            <p id="o-total" class="mt-3 text-sm font-semibold text-sams-blue"></p>
+                        </div>
+                        <div id="o-actions" class="border-t pt-4 space-y-3">
+                            <p id="o-error" class="hidden text-sm text-red-600"></p>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="o-confirm" type="button" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 px-3 hover:bg-sams-light-blue transition">Confirm order</button>
+                                <button id="o-complete" type="button" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 px-3 hover:bg-sams-light-blue transition">Mark completed</button>
+                                <button id="o-cancel" type="button" class="px-4 rounded-lg border border-gray-300 text-sm hover:bg-gray-50">Cancel order</button>
+                            </div>
+                        </div>
+                        <p id="o-done" class="hidden border-t pt-4 text-sm text-gray-600"></p>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- Supplies catalogue tab -->
+            <div id="tab-supplies" class="hidden grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex flex-wrap items-center gap-3 justify-between">
+                        <h1 class="font-heading font-bold text-xl text-sams-blue">Supplies catalogue</h1>
+                        <button id="new-item-btn" type="button" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">
+                            <i class="fa-solid fa-plus mr-1"></i> Add product
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left text-gray-600">
+                                <tr>
+                                    <th class="px-4 py-3">Product</th>
+                                    <th class="px-4 py-3">Category</th>
+                                    <th class="px-4 py-3">Price</th>
+                                    <th class="px-4 py-3">On website</th>
+                                </tr>
+                            </thead>
+                            <tbody id="item-rows"></tbody>
+                        </table>
+                        <p id="item-empty" class="hidden p-6 text-center text-gray-500">No products yet.</p>
+                    </div>
+                </div>
+
+                <aside>
+                    <div id="item-panel-empty" class="bg-white rounded-2xl shadow p-6 text-gray-500 text-sm">
+                        Select a product to edit it, or add a new one.
+                    </div>
+                    <form id="item-form" class="hidden bg-white rounded-2xl shadow p-6 space-y-3">
+                        <h2 id="item-form-title" class="font-heading font-bold text-sams-blue">Product</h2>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="i-name">Name</label>
+                            <input id="i-name" required maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="i-category">Category</label>
+                            <select id="i-category" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="i-desc">Short description (optional)</label>
+                            <input id="i-desc" maxlength="300" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" for="i-price">Price in &pound;</label>
+                                <input id="i-price" inputmode="decimal" maxlength="10" placeholder="e.g. 12.50" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" for="i-unit">Sold per</label>
+                                <input id="i-unit" maxlength="30" placeholder="each" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                        </div>
+                        <p class="text-xs text-gray-500 -mt-1">Leave the price blank to show &ldquo;Price on request&rdquo; on the website.</p>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="i-sort">Sort order (small numbers first)</label>
+                            <input id="i-sort" inputmode="numeric" maxlength="4" placeholder="0" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <label class="flex items-center gap-2 text-sm">
+                            <input id="i-active" type="checkbox" checked class="h-4 w-4 rounded border-gray-300">
+                            Show on website
+                        </label>
+                        <p id="item-error" class="hidden text-sm text-red-600"></p>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 hover:bg-sams-light-blue transition">Save</button>
+                            <button type="button" id="item-cancel" class="px-4 rounded-lg border border-gray-300 text-sm">Cancel</button>
+                        </div>
+                        <button type="button" id="item-delete" class="hidden text-xs text-red-600 hover:underline">Delete this product</button>
+                    </form>
                 </aside>
             </div>
         </section>
