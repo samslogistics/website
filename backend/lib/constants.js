@@ -28,3 +28,14 @@ export const STATUSES = [
   'Delivered',
   'On hold',
 ];
+
+// ---- Supplies ordering ----
+export const SUPPLY_CATEGORIES = ['Boxes', 'Barrels', 'Tape', 'Shrink wrap', 'Other'];
+
+export const FULFILMENT = {
+  delivery: 'Delivery',
+  collection: 'Collection',
+};
+
+// Order status flow: new -> confirmed -> completed (or cancelled while new/confirmed)
+export const SUPPLY_ORDER_STATUSES = ['new', 'confirmed', 'completed', 'cancelled'];

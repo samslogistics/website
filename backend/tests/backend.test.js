@@ -6,7 +6,10 @@ process.env.SESSION_SECRET = 'x'.repeat(40);
 delete process.env.DATABASE_URL; // no DB in tests: only paths that return before querying
 
 const { checkPassword, sessionCookie, isAdmin } = await import('../lib/auth.js');
-const { normalizeRef, clean, generateRef, generateRequestRef, validBookingDate, EMAIL_RE, PHONE_RE } = await import('../lib/http.js');
+const {
+  normalizeRef, clean, generateRef, generateRequestRef, validBookingDate, EMAIL_RE, PHONE_RE,
+  generateOrderRef, parsePricePence, parseOrderLines, MAX_ORDER_LINES, MAX_LINE_QTY,
+} = await import('../lib/http.js');
 const { DESTINATIONS } = await import('../lib/constants.js');
 const track = (await import('../../api/track.js')).default;
 const session = (await import('../../api/admin/session.js')).default;
@@ -14,6 +17,9 @@ const shipments = (await import('../../api/admin/shipments.js')).default;
 const shipment = (await import('../../api/admin/shipment.js')).default;
 const booking = (await import('../../api/booking.js')).default;
 const bookings = (await import('../../api/admin/bookings.js')).default;
+const supplies = (await import('../../api/supplies.js')).default;
+const supplyItems = (await import('../../api/admin/supply-items.js')).default;
+const supplyOrders = (await import('../../api/admin/supply-orders.js')).default;
 
 function mockRes() {
   return {
@@ -174,6 +180,107 @@ test('admin bookings: needs a session, validates id and action', async () => {
   ]) {
     const res = mockRes();
     await bookings({ method: 'POST', headers, body }, res);
+    assert.equal(res.statusCode, 400, JSON.stringify(body));
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Supplies ordering
+// ---------------------------------------------------------------------------
+test('supplies helpers: order reference format', () => {
+  for (let i = 0; i < 50; i++) assert.match(generateOrderRef(), /^SO-[A-HJKMNP-Z2-9]{6}$/);
+});
+
+test('parsePricePence: pounds in, pence out, blank = price on request', () => {
+  assert.deepEqual(parsePricePence('12.50'), { ok: true, pence: 1250 });
+  assert.deepEqual(parsePricePence('£12.5'), { ok: true, pence: 1250 });
+  assert.deepEqual(parsePricePence(' 7 '), { ok: true, pence: 700 });
+  assert.deepEqual(parsePricePence('0.99'), { ok: true, pence: 99 });
+  assert.deepEqual(parsePricePence('19.99'), { ok: true, pence: 1999 }); // no floating point drift
+  assert.deepEqual(parsePricePence(''), { ok: true, pence: null });
+  assert.deepEqual(parsePricePence(undefined), { ok: true, pence: null });
+  assert.deepEqual(parsePricePence(null), { ok: true, pence: null });
+  for (const bad of ['abc', '-3', '12.345', '1,50', '1e3', '£', '£ -1', '9999999']) {
+    assert.equal(parsePricePence(bad).ok, false, bad);
+  }
+});
+
+test('parseOrderLines: accepts good lines, merges duplicates, rejects the rest', () => {
+  assert.deepEqual(parseOrderLines([{ id: 1, quantity: 2 }, { id: '2', quantity: '3' }]), [{ id: 1, qty: 2 }, { id: 2, qty: 3 }]);
+  assert.deepEqual(parseOrderLines([{ id: 1, quantity: 2 }, { id: 1, quantity: 3 }]), [{ id: 1, qty: 5 }]);
+  assert.deepEqual(parseOrderLines([{ id: 1, quantity: MAX_LINE_QTY }, { id: 1, quantity: 10 }]), [{ id: 1, qty: MAX_LINE_QTY }]);
+  assert.deepEqual(parseOrderLines([{ id: 1, quantity: 1, price: 0, name: 'FREE' }]), [{ id: 1, qty: 1 }]); // extras ignored
+  for (const bad of [
+    undefined, null, 'x', [], {}, [null], [{}], [{ id: 0, quantity: 1 }], [{ id: -1, quantity: 1 }], [{ id: 1.5, quantity: 1 }],
+    [{ id: 1, quantity: 0 }], [{ id: 1, quantity: -2 }], [{ id: 1, quantity: 1.5 }], [{ id: 1, quantity: MAX_LINE_QTY + 1 }],
+    [{ id: 1, quantity: 'lots' }], [{ id: 'abc', quantity: 1 }],
+    Array.from({ length: MAX_ORDER_LINES + 1 }, (_, i) => ({ id: i + 1, quantity: 1 })),
+  ]) {
+    assert.equal(parseOrderLines(bad), null, JSON.stringify(bad));
+  }
+  assert.equal(parseOrderLines(Array.from({ length: MAX_ORDER_LINES }, (_, i) => ({ id: i + 1, quantity: 1 }))).length, MAX_ORDER_LINES);
+});
+
+const validOrder = () => ({
+  name: 'Kwame Asante', phone: '+44 7700 900123', email: 'kwame@example.com', fulfilment: 'delivery',
+  address: '1 High Street, London E1 1AA', note: '', items: [{ id: 1, quantity: 2 }], website: '', consent: true,
+});
+const postOrder = async (body, method = 'POST') => {
+  const res = mockRes();
+  await supplies({ method, body, headers: { 'x-forwarded-for': '203.0.113.20' } }, res);
+  return res;
+};
+
+test('POST /api/supplies rejects bad input before touching the database', async () => {
+  assert.equal((await postOrder(validOrder(), 'PUT')).statusCode, 405);
+  for (const [field, value] of [
+    ['items', []], ['items', 'box'], ['items', [{ id: 1, quantity: 0 }]], ['name', '  '], ['phone', 'abc'],
+    ['email', 'not-an-email'], ['fulfilment', 'drone'], ['fulfilment', ''], ['address', ''], ['consent', false], ['consent', 'true'],
+  ]) {
+    const res = await postOrder({ ...validOrder(), [field]: value });
+    assert.equal(res.statusCode, 400, `${field}=${JSON.stringify(value)}`);
+    assert.ok(res.body.error);
+  }
+  // collection does not need an address
+  const ok = await postOrder({ ...validOrder(), fulfilment: 'collection', address: '' });
+  assert.notEqual(ok.statusCode, 400); // passes validation (500 here only because the test has no database)
+});
+
+test('supplies honeypot returns a fake success without saving', async () => {
+  const res = await postOrder({ ...validOrder(), website: 'http://spam.example' });
+  assert.equal(res.statusCode, 201);
+  assert.match(res.body.reference, /^SO-/);
+});
+
+test('admin supply endpoints need a session and validate input', async () => {
+  for (const handler of [supplyItems, supplyOrders]) {
+    for (const method of ['GET', 'POST', 'DELETE']) {
+      const res = mockRes();
+      await handler({ method, query: {}, headers: {}, body: {} }, res);
+      assert.equal(res.statusCode, method === 'DELETE' && handler === supplyOrders ? 405 : 401, `${method}`);
+    }
+  }
+
+  const headers = { cookie: cookieOf(sessionCookie()) };
+  const item = (over) => ({ name: 'Bubble wrap', category: 'Other', unit: 'roll', price: '12.99', ...over });
+  for (const body of [
+    item({ name: ' ' }), item({ category: 'Cars' }), item({ price: '12.345' }), item({ price: '-1' }),
+    item({ sortOrder: 'abc' }), item({ sortOrder: -1 }), item({ sortOrder: 10000 }), item({ id: 'zz' }), item({ id: 0 }),
+  ]) {
+    const res = mockRes();
+    await supplyItems({ method: 'POST', headers, body }, res);
+    assert.equal(res.statusCode, 400, JSON.stringify(body));
+  }
+  const del = mockRes();
+  await supplyItems({ method: 'DELETE', headers, query: { id: 'x' } }, del);
+  assert.equal(del.statusCode, 400);
+
+  for (const body of [
+    { id: 'abc', action: 'confirm' }, { id: 0, action: 'confirm' }, { id: 1.5, action: 'confirm' },
+    { id: 1, action: 'delete' }, { id: 1 }, {},
+  ]) {
+    const res = mockRes();
+    await supplyOrders({ method: 'POST', headers, body }, res);
     assert.equal(res.statusCode, 400, JSON.stringify(body));
   }
 });

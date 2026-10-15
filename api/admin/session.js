@@ -2,10 +2,15 @@
 // POST   /api/admin/session  -> sign in  { password }
 // DELETE /api/admin/session  -> sign out
 import { checkPassword, sessionCookie, clearCookie, isAdmin } from '../../backend/lib/auth.js';
-import { SERVICES, DESTINATIONS, STATUSES } from '../../backend/lib/constants.js';
+import { SERVICES, DESTINATIONS, STATUSES, SUPPLY_CATEGORIES } from '../../backend/lib/constants.js';
 import { json, methodGuard, bodyOf } from '../../backend/lib/http.js';
 
-const meta = () => ({ services: SERVICES, destinations: Object.keys(DESTINATIONS), statuses: STATUSES });
+const meta = () => ({
+  services: SERVICES,
+  destinations: Object.keys(DESTINATIONS),
+  statuses: STATUSES,
+  supplyCategories: SUPPLY_CATEGORIES,
+});
 
 export default async function handler(req, res) {
   if (!methodGuard(req, res, ['GET', 'POST', 'DELETE'])) return;

@@ -53,8 +53,10 @@ document.addEventListener('DOMContentLoaded', () => {
         fillSelect($('n-service'), Object.entries(meta.services));
         fillSelect($('n-destination'), meta.destinations.map((d) => [d, d]));
         fillSelect($('e-status'), meta.statuses.map((s) => [s, s]));
+        fillSelect($('i-category'), meta.supplyCategories.map((c) => [c, c]));
         loadList();
         refreshBadge();
+        refreshOrdersBadge();
     }
 
     function showPanel(which) {
@@ -206,18 +208,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---- tabs ----
+    const TABS = ['shipments', 'requests', 'orders', 'supplies'];
+
     function showTab(name) {
-        const isShip = name === 'shipments';
-        $('tab-shipments').classList.toggle('hidden', !isShip);
-        $('tab-requests').classList.toggle('hidden', isShip);
-        $('tab-btn-shipments').className = 'px-4 py-2 font-semibold border-b-2 -mb-px ' +
-            (isShip ? 'text-sams-blue border-sams-gold' : 'text-gray-500 border-transparent hover:text-sams-blue');
-        $('tab-btn-requests').className = 'px-4 py-2 font-semibold border-b-2 -mb-px ' +
-            (!isShip ? 'text-sams-blue border-sams-gold' : 'text-gray-500 border-transparent hover:text-sams-blue');
-        if (!isShip) loadRequests().catch(() => {});
+        for (const tab of TABS) {
+            const on = tab === name;
+            $('tab-' + tab).classList.toggle('hidden', !on);
+            $('tab-btn-' + tab).className = 'px-4 py-2 font-semibold border-b-2 -mb-px ' +
+                (on ? 'text-sams-blue border-sams-gold' : 'text-gray-500 border-transparent hover:text-sams-blue');
+        }
+        if (name === 'requests') {
+            if (!currentRequest) showRequestPanel('empty'); // never leave a handled request's buttons on screen
+            loadRequests().catch(() => {});
+        }
+        if (name === 'orders') {
+            if (!currentOrder) showOrderPanel('empty');
+            loadOrders().catch(() => {});
+        }
+        if (name === 'supplies') loadItems().catch(() => {});
     }
-    $('tab-btn-shipments').addEventListener('click', () => showTab('shipments'));
-    $('tab-btn-requests').addEventListener('click', () => showTab('requests'));
+    for (const tab of TABS) $('tab-btn-' + tab).addEventListener('click', () => showTab(tab));
 
     // ---- booking requests ----
     let currentRequest = null;
@@ -302,6 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 body: { id: currentRequest.id, action: 'accept', location: $('r-location').value },
             });
             currentRequest = null;
+            showRequestPanel('empty');
             showTab('shipments');
             await loadList();
             await openShipment(shipmentRef);
@@ -323,6 +334,195 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadRequests();
         } catch (err) {
             showError($('r-error'), err.message);
+        }
+    });
+
+    // ---- supply orders ----
+    let currentOrder = null;
+
+    const gbp = (pence) => '\u00A3' + (pence / 100).toFixed(2);
+    const orderTotal = (lines) => (lines.length && lines.every((l) => l.unitPricePence !== null)
+        ? lines.reduce((sum, l) => sum + l.unitPricePence * l.quantity, 0)
+        : null);
+
+    function setOrdersBadge(n) {
+        const badge = $('orders-badge');
+        badge.textContent = n;
+        badge.classList.toggle('hidden', !n);
+    }
+
+    async function refreshOrdersBadge() {
+        try {
+            const { newCount } = await api('/api/admin/supply-orders?status=new');
+            setOrdersBadge(newCount);
+        } catch { /* ignore */ }
+    }
+
+    function showOrderPanel(which) {
+        $('order-panel-empty').classList.toggle('hidden', which !== 'empty');
+        $('order-detail').classList.toggle('hidden', which !== 'detail');
+    }
+
+    async function loadOrders() {
+        const status = $('order-filter').value;
+        const { orders, newCount } = await api('/api/admin/supply-orders?status=' + encodeURIComponent(status));
+        setOrdersBadge(newCount);
+        $('order-rows').replaceChildren(...orders.map((o) => {
+            const total = orderTotal(o.lines);
+            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentOrder && o.id === currentOrder.id ? ' bg-yellow-50' : ''));
+            tr.append(
+                el('td', 'px-4 py-3 font-semibold text-sams-blue', o.reference),
+                el('td', 'px-4 py-3', o.customer_name),
+                el('td', 'px-4 py-3', String(o.lines.reduce((n, l) => n + l.quantity, 0))),
+                el('td', 'px-4 py-3', total === null ? 'To confirm' : gbp(total)),
+                el('td', 'px-4 py-3', fmt(o.created_at)),
+                el('td', 'px-4 py-3', o.status),
+            );
+            tr.addEventListener('click', () => openOrder(o));
+            return tr;
+        }));
+        $('order-empty').classList.toggle('hidden', orders.length > 0);
+    }
+
+    function openOrder(o) {
+        currentOrder = o;
+        showError($('o-error'), '');
+        $('o-ref').textContent = o.reference;
+        $('o-meta').textContent = `${o.fulfilment === 'delivery' ? 'Delivery' : 'Collection'} \u00B7 ${o.status}`;
+        const rows = [
+            ['Name', o.customer_name], ['Phone', o.customer_phone], ['Email', o.customer_email],
+            ['Address', o.address], ['Notes', o.note], ['Received', fmt(o.created_at)],
+        ].filter(([, v]) => v);
+        $('o-info').replaceChildren(...rows.flatMap(([k, v]) => [
+            el('dt', 'text-gray-500', k),
+            el('dd', 'col-span-2 break-words whitespace-pre-line', v),
+        ]));
+        $('o-lines').replaceChildren(...o.lines.map((l) => {
+            const li = el('li', 'flex justify-between gap-3');
+            li.append(
+                el('span', '', `${l.quantity} \u00D7 ${l.name}`),
+                el('span', 'text-gray-600 whitespace-nowrap', l.unitPricePence === null ? 'Price on request' : gbp(l.unitPricePence * l.quantity)),
+            );
+            return li;
+        }));
+        const total = orderTotal(o.lines);
+        $('o-total').textContent = total === null ? 'Total: to be confirmed with the customer' : `Total: ${gbp(total)}`;
+
+        const open = o.status === 'new' || o.status === 'confirmed';
+        $('o-actions').classList.toggle('hidden', !open);
+        $('o-confirm').classList.toggle('hidden', o.status !== 'new');
+        $('o-complete').classList.toggle('hidden', o.status !== 'confirmed');
+        const done = $('o-done');
+        done.classList.toggle('hidden', open);
+        done.textContent = open ? '' : (o.status === 'completed' ? 'Completed.' : 'Cancelled.');
+        showOrderPanel('detail');
+    }
+
+    $('order-filter').addEventListener('change', () => {
+        currentOrder = null;
+        showOrderPanel('empty');
+        loadOrders().catch(() => {});
+    });
+
+    async function orderAction(action, confirmText) {
+        if (!currentOrder) return;
+        if (confirmText && !confirm(confirmText)) return;
+        showError($('o-error'), '');
+        try {
+            await api('/api/admin/supply-orders', { method: 'POST', body: { id: currentOrder.id, action } });
+            currentOrder = null;
+            showOrderPanel('empty');
+            await loadOrders();
+        } catch (err) {
+            showError($('o-error'), err.message);
+        }
+    }
+    $('o-confirm').addEventListener('click', () => orderAction('confirm'));
+    $('o-complete').addEventListener('click', () => orderAction('complete'));
+    $('o-cancel').addEventListener('click', () => orderAction('cancel', currentOrder ? `Cancel order ${currentOrder.reference}?` : ''));
+
+    // ---- supplies catalogue ----
+    let currentItem = null; // null = nothing open, {} = new product
+
+    function showItemPanel(which) {
+        $('item-panel-empty').classList.toggle('hidden', which !== 'empty');
+        $('item-form').classList.toggle('hidden', which !== 'form');
+    }
+
+    async function loadItems() {
+        const { items } = await api('/api/admin/supply-items');
+        $('item-rows').replaceChildren(...items.map((it) => {
+            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentItem && String(it.id) === String(currentItem.id) ? ' bg-yellow-50' : ''));
+            tr.append(
+                el('td', 'px-4 py-3 font-semibold text-sams-blue', it.name),
+                el('td', 'px-4 py-3', it.category),
+                el('td', 'px-4 py-3', it.price_pence === null ? 'Price on request' : `${gbp(it.price_pence)} / ${it.unit}`),
+                el('td', 'px-4 py-3', it.active ? 'Shown' : 'Hidden'),
+            );
+            tr.addEventListener('click', () => openItem(it));
+            return tr;
+        }));
+        $('item-empty').classList.toggle('hidden', items.length > 0);
+    }
+
+    function openItem(it) {
+        currentItem = it;
+        showError($('item-error'), '');
+        const isNew = it.id === undefined;
+        $('item-form-title').textContent = isNew ? 'New product' : 'Edit product';
+        $('i-name').value = it.name || '';
+        $('i-category').value = it.category || meta.supplyCategories[0];
+        $('i-desc').value = it.description || '';
+        $('i-price').value = it.price_pence === null || it.price_pence === undefined ? '' : (it.price_pence / 100).toFixed(2);
+        $('i-unit').value = it.unit || 'each';
+        $('i-sort').value = it.sort_order === undefined ? '' : String(it.sort_order);
+        $('i-active').checked = it.active !== false;
+        $('item-delete').classList.toggle('hidden', isNew);
+        showItemPanel('form');
+    }
+
+    $('new-item-btn').addEventListener('click', () => openItem({}));
+    $('item-cancel').addEventListener('click', () => {
+        currentItem = null;
+        showItemPanel('empty');
+        loadItems().catch(() => {});
+    });
+
+    $('item-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        showError($('item-error'), '');
+        try {
+            await api('/api/admin/supply-items', {
+                method: 'POST',
+                body: {
+                    id: currentItem && currentItem.id !== undefined ? currentItem.id : undefined,
+                    name: $('i-name').value,
+                    category: $('i-category').value,
+                    description: $('i-desc').value,
+                    price: $('i-price').value,
+                    unit: $('i-unit').value,
+                    sortOrder: $('i-sort').value,
+                    active: $('i-active').checked,
+                },
+            });
+            currentItem = null;
+            showItemPanel('empty');
+            await loadItems();
+        } catch (err) {
+            showError($('item-error'), err.message);
+        }
+    });
+
+    $('item-delete').addEventListener('click', async () => {
+        if (!currentItem || currentItem.id === undefined) return;
+        if (!confirm(`Delete "${currentItem.name}"? Past orders keep their copy of it. To only hide it from the website, untick "Show on website" instead.`)) return;
+        try {
+            await api('/api/admin/supply-items?id=' + encodeURIComponent(currentItem.id), { method: 'DELETE' });
+            currentItem = null;
+            showItemPanel('empty');
+            await loadItems();
+        } catch (err) {
+            showError($('item-error'), err.message);
         }
     });
 
