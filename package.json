@@ -1,0 +1,15 @@
+{
+  "name": "sams-logistics",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Sam's Logistics UK - website with tracking and admin backend (Vercel + Neon)",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "dev": "vercel dev",
+    "test": "node --test backend/tests/*.test.js"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "^1.0.0"
+  }
+}
