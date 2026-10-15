@@ -14,6 +14,8 @@ api/                        Vercel function entry points (URL = /api/...)
   admin/session.js          login / logout / session check
   admin/shipments.js        list + create shipments
   admin/shipment.js         one shipment: details, add status update, delete
+  booking.js                public: POST /api/booking (booking request from the home page form)
+  admin/bookings.js         admin: list requests, accept (creates a shipment + tracking number) or decline
 backend/lib                 shared server code (db, auth, helpers, constants)
 backend/db/schema.sql       database schema
 backend/tests               node:test unit tests (npm test)
@@ -45,5 +47,4 @@ Format `SL-<GH|JM|UK>-XXXXXX`, generated when you create a shipment. Customers o
 ## Next phases
 
 - Supplies catalogue + order requests (boxes, barrels, tape, shrink wrap)
-- Booking requests: shipping, London moves (A to B), parcel delivery
 - Email/WhatsApp notification on status change
