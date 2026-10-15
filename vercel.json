@@ -2,6 +2,9 @@
   "redirects": [
     { "source": "/backend/:path*", "destination": "/", "permanent": false }
   ],
+  "rewrites": [
+    { "source": "/admin", "destination": "/admin.html" }
+  ],
   "headers": [
     {
       "source": "/api/(.*)",
