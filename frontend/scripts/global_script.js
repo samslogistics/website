@@ -221,4 +221,66 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // --- Booking Request Form (POST /api/booking) ---
+    const bookingForm = document.getElementById('booking-form');
+    const bookingStatus = document.getElementById('booking-status');
+    const bookingSubmit = document.getElementById('booking-submit');
+
+    if (bookingForm && bookingStatus && bookingSubmit) {
+        const dateInput = document.getElementById('booking-date');
+        if (dateInput) {
+            const now = new Date();
+            const pad = (n) => String(n).padStart(2, '0');
+            dateInput.min = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
+        }
+
+        const setBookingStatus = (message, type) => {
+            const colours = { error: 'text-red-600', success: 'text-green-700', info: 'text-gray-600' };
+            bookingStatus.className = 'mt-3 text-center text-sm font-semibold ' + colours[type];
+            bookingStatus.textContent = message;
+        };
+
+        bookingForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!bookingForm.reportValidity()) return;
+
+            const value = (id) => document.getElementById(id).value;
+            const payload = {
+                service: value('booking-service'),
+                destination: value('booking-destination'),
+                name: value('booking-name'),
+                phone: value('booking-phone'),
+                email: value('booking-email'),
+                pickupAddress: value('booking-pickup'),
+                deliveryAddress: value('booking-delivery'),
+                preferredDate: value('booking-date'),
+                description: value('booking-description'),
+                website: value('booking-website'),
+                consent: document.getElementById('booking-consent').checked,
+            };
+
+            bookingSubmit.disabled = true;
+            setBookingStatus('Sending your request...', 'info');
+
+            try {
+                const res = await fetch('/api/booking', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
+                });
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    setBookingStatus(data.error || 'Something went wrong. Please try again or call us.', 'error');
+                    return;
+                }
+                bookingForm.reset();
+                setBookingStatus(`Thank you! Your request reference is ${data.reference}. We will contact you shortly to confirm.`, 'success');
+            } catch (error) {
+                setBookingStatus('Network error. Please check your connection and try again.', 'error');
+            } finally {
+                bookingSubmit.disabled = false;
+            }
+        });
+    }
 });

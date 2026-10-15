@@ -37,3 +37,29 @@ export function generateRef(destinationCode) {
   for (const b of bytes) tail += REF_ALPHABET[b % REF_ALPHABET.length];
   return `SL-${destinationCode}-${tail}`;
 }
+
+export function generateRequestRef() {
+  let tail = '';
+  const bytes = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(bytes);
+  for (const b of bytes) tail += REF_ALPHABET[b % REF_ALPHABET.length];
+  return `BR-${tail}`;
+}
+
+export function clientIp(req) {
+  const fwd = req.headers?.['x-forwarded-for'];
+  const first = (Array.isArray(fwd) ? fwd[0] : fwd || '').split(',')[0].trim();
+  return first || req.headers?.['x-real-ip'] || 'unknown';
+}
+
+export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+export const PHONE_RE = /^[0-9+()\-\s]{6,25}$/;
+
+// 'YYYY-MM-DD' that is a real date, from yesterday up to ~13 months ahead.
+export function validBookingDate(value, now = new Date()) {
+  if (typeof value !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const d = new Date(`${value}T00:00:00Z`);
+  if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== value) return false;
+  const day = 24 * 60 * 60 * 1000;
+  return d.getTime() >= now.getTime() - 2 * day && d.getTime() <= now.getTime() + 400 * day;
+}

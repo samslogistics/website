@@ -54,6 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fillSelect($('n-destination'), meta.destinations.map((d) => [d, d]));
         fillSelect($('e-status'), meta.statuses.map((s) => [s, s]));
         loadList();
+        refreshBadge();
     }
 
     function showPanel(which) {
@@ -201,6 +202,127 @@ document.addEventListener('DOMContentLoaded', () => {
             loadList();
         } catch (err) {
             showError($('event-error'), err.message);
+        }
+    });
+
+    // ---- tabs ----
+    function showTab(name) {
+        const isShip = name === 'shipments';
+        $('tab-shipments').classList.toggle('hidden', !isShip);
+        $('tab-requests').classList.toggle('hidden', isShip);
+        $('tab-btn-shipments').className = 'px-4 py-2 font-semibold border-b-2 -mb-px ' +
+            (isShip ? 'text-sams-blue border-sams-gold' : 'text-gray-500 border-transparent hover:text-sams-blue');
+        $('tab-btn-requests').className = 'px-4 py-2 font-semibold border-b-2 -mb-px ' +
+            (!isShip ? 'text-sams-blue border-sams-gold' : 'text-gray-500 border-transparent hover:text-sams-blue');
+        if (!isShip) loadRequests().catch(() => {});
+    }
+    $('tab-btn-shipments').addEventListener('click', () => showTab('shipments'));
+    $('tab-btn-requests').addEventListener('click', () => showTab('requests'));
+
+    // ---- booking requests ----
+    let currentRequest = null;
+
+    function setBadge(n) {
+        const badge = $('requests-badge');
+        badge.textContent = n;
+        badge.classList.toggle('hidden', !n);
+    }
+
+    async function refreshBadge() {
+        try {
+            const { newCount } = await api('/api/admin/bookings?status=new');
+            setBadge(newCount);
+        } catch { /* ignore */ }
+    }
+
+    function showRequestPanel(which) {
+        $('request-panel-empty').classList.toggle('hidden', which !== 'empty');
+        $('request-detail').classList.toggle('hidden', which !== 'detail');
+    }
+
+    async function loadRequests() {
+        const status = $('request-filter').value;
+        const { requests, newCount } = await api('/api/admin/bookings?status=' + encodeURIComponent(status));
+        setBadge(newCount);
+        $('request-rows').replaceChildren(...requests.map((r) => {
+            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentRequest && r.id === currentRequest.id ? ' bg-yellow-50' : ''));
+            tr.append(
+                el('td', 'px-4 py-3 font-semibold text-sams-blue', r.reference),
+                el('td', 'px-4 py-3', r.customer_name),
+                el('td', 'px-4 py-3', meta.services[r.service] || r.service),
+                el('td', 'px-4 py-3', r.destination),
+                el('td', 'px-4 py-3', fmt(r.created_at)),
+                el('td', 'px-4 py-3', r.status),
+            );
+            tr.addEventListener('click', () => openRequest(r));
+            return tr;
+        }));
+        $('request-empty').classList.toggle('hidden', requests.length > 0);
+    }
+
+    function openRequest(r) {
+        currentRequest = r;
+        showError($('r-error'), '');
+        $('r-ref').textContent = r.reference;
+        $('r-meta').textContent = `${meta.services[r.service] || r.service} to ${r.destination} · ${r.status}`;
+        const rows = [
+            ['Name', r.customer_name], ['Phone', r.customer_phone], ['Email', r.customer_email],
+            ['Pick-up', r.pickup_address], ['Delivery', r.delivery_address],
+            ['Date', r.preferred_date ? String(r.preferred_date).slice(0, 10) : null],
+            ['Notes', r.description], ['Received', fmt(r.created_at)],
+        ].filter(([, v]) => v);
+        $('r-info').replaceChildren(...rows.flatMap(([k, v]) => [
+            el('dt', 'text-gray-500', k),
+            el('dd', 'col-span-2 break-words whitespace-pre-line', v),
+        ]));
+        const isNew = r.status === 'new';
+        $('r-actions').classList.toggle('hidden', !isNew);
+        const done = $('r-done');
+        done.classList.toggle('hidden', isNew);
+        done.textContent = isNew ? '' : (r.status === 'accepted'
+            ? `Accepted${r.shipment_ref ? ' - tracking number ' + r.shipment_ref : ''}.`
+            : 'Declined.');
+        $('r-location').value = '';
+        showRequestPanel('detail');
+    }
+
+    $('request-filter').addEventListener('change', () => {
+        currentRequest = null;
+        showRequestPanel('empty');
+        loadRequests().catch(() => {});
+    });
+
+    $('r-accept').addEventListener('click', async () => {
+        if (!currentRequest) return;
+        showError($('r-error'), '');
+        $('r-accept').disabled = true;
+        try {
+            const { shipmentRef } = await api('/api/admin/bookings', {
+                method: 'POST',
+                body: { id: currentRequest.id, action: 'accept', location: $('r-location').value },
+            });
+            currentRequest = null;
+            showTab('shipments');
+            await loadList();
+            await openShipment(shipmentRef);
+            refreshBadge();
+        } catch (err) {
+            showError($('r-error'), err.message);
+        } finally {
+            $('r-accept').disabled = false;
+        }
+    });
+
+    $('r-decline').addEventListener('click', async () => {
+        if (!currentRequest || !confirm(`Decline request ${currentRequest.reference}?`)) return;
+        showError($('r-error'), '');
+        try {
+            await api('/api/admin/bookings', { method: 'POST', body: { id: currentRequest.id, action: 'decline' } });
+            currentRequest = null;
+            showRequestPanel('empty');
+            await loadRequests();
+        } catch (err) {
+            showError($('r-error'), err.message);
         }
     });
 
