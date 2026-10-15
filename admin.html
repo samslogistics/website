@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Admin | Sam's Logistics</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="assets/images/favicon-32x32.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { 'sams-blue': '#002654', 'sams-gold': '#FFB81C', 'sams-light-blue': '#0072CE' },
+                    fontFamily: { 'sans': ['Open Sans', 'sans-serif'], 'heading': ['Montserrat', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="frontend/styles/global_style.css">
+    <script src="frontend/scripts/admin.js" defer></script>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans min-h-screen">
+
+    <header class="bg-sams-blue text-white">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-10 w-auto rounded">
+                <span class="font-heading font-bold tracking-wide">Admin</span>
+            </div>
+            <div class="flex items-center gap-4 text-sm">
+                <a href="index.html" class="hover:text-sams-gold">View site</a>
+                <button id="logout-btn" class="hidden px-3 py-1.5 rounded-lg border border-white/30 hover:bg-white/10">Sign out</button>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-4 py-6">
+
+        <!-- Login -->
+        <section id="login-view" class="hidden max-w-sm mx-auto bg-white rounded-2xl shadow p-6 mt-10">
+            <h1 class="font-heading font-bold text-xl text-sams-blue mb-4">Sign in</h1>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="login-password" class="block text-sm font-semibold mb-1">Password</label>
+                    <input id="login-password" type="password" required autocomplete="current-password"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                </div>
+                <p id="login-error" class="hidden text-sm text-red-600"></p>
+                <button type="submit" class="w-full bg-sams-blue text-white font-semibold rounded-lg py-2.5 hover:bg-sams-light-blue transition">Sign in</button>
+            </form>
+        </section>
+
+        <!-- Dashboard -->
+        <section id="app-view" class="hidden">
+            <div class="grid lg:grid-cols-3 gap-6">
+
+                <!-- Left: list -->
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex flex-wrap items-center gap-3 justify-between">
+                        <h1 class="font-heading font-bold text-xl text-sams-blue">Shipments</h1>
+                        <div class="flex gap-2">
+                            <input id="search-input" type="search" placeholder="Search ref or name"
+                                   class="rounded-lg border border-gray-300 px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                            <button id="new-btn" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">
+                                <i class="fa-solid fa-plus mr-1"></i> New shipment
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left text-gray-600">
+                                <tr>
+                                    <th class="px-4 py-3">Tracking no.</th>
+                                    <th class="px-4 py-3">Customer</th>
+                                    <th class="px-4 py-3">Service</th>
+                                    <th class="px-4 py-3">To</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="shipment-rows"></tbody>
+                        </table>
+                        <p id="list-empty" class="hidden p-6 text-center text-gray-500">No shipments yet.</p>
+                    </div>
+                </div>
+
+                <!-- Right: detail / new -->
+                <aside class="space-y-4">
+                    <div id="panel-empty" class="bg-white rounded-2xl shadow p-6 text-gray-500 text-sm">
+                        Select a shipment to update its status, or create a new one.
+                    </div>
+
+                    <!-- New shipment form -->
+                    <form id="new-form" class="hidden bg-white rounded-2xl shadow p-6 space-y-3">
+                        <h2 class="font-heading font-bold text-sams-blue">New shipment</h2>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="n-service">Service</label>
+                            <select id="n-service" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="n-destination">Destination</label>
+                            <select id="n-destination" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="n-name">Customer name</label>
+                            <input id="n-name" required maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" for="n-email">Email</label>
+                                <input id="n-email" type="email" maxlength="160" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1" for="n-phone">Phone</label>
+                                <input id="n-phone" maxlength="40" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="n-receiver">Receiver name (abroad)</label>
+                            <input id="n-receiver" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1" for="n-desc">Contents / notes</label>
+                            <textarea id="n-desc" rows="2" maxlength="500" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></textarea>
+                        </div>
+                        <p id="new-error" class="hidden text-sm text-red-600"></p>
+                        <div class="flex gap-2">
+                            <button type="submit" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 hover:bg-sams-light-blue transition">Create</button>
+                            <button type="button" id="new-cancel" class="px-4 rounded-lg border border-gray-300 text-sm">Cancel</button>
+                        </div>
+                    </form>
+
+                    <!-- Shipment detail -->
+                    <div id="detail" class="hidden bg-white rounded-2xl shadow p-6 space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Tracking number</p>
+                            <p id="d-ref" class="font-heading font-bold text-lg text-sams-blue break-all"></p>
+                            <p id="d-meta" class="text-sm text-gray-600"></p>
+                        </div>
+                        <dl id="d-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
+
+                        <form id="event-form" class="space-y-3 border-t pt-4">
+                            <h3 class="font-semibold text-sm">Add status update</h3>
+                            <select id="e-status" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
+                            <input id="e-location" placeholder="Location (optional)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <input id="e-note" placeholder="Note shown to customer (optional)" maxlength="500" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <p id="event-error" class="hidden text-sm text-red-600"></p>
+                            <button type="submit" class="w-full bg-sams-blue text-white font-semibold rounded-lg py-2 hover:bg-sams-light-blue transition">Save update</button>
+                        </form>
+
+                        <ol id="d-events" class="border-t pt-4 space-y-3 text-sm"></ol>
+
+                        <button id="delete-btn" class="text-xs text-red-600 hover:underline">Delete this shipment</button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+    </main>
+</body>
+</html>
