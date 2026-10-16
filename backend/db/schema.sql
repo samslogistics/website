@@ -115,3 +115,21 @@ FROM (VALUES
     ('Shrink wrap - wholesale',  'Shrink wrap', 'Clear shrink wrap packaging film in bulk', 'each', 100)
 ) AS v(name, category, description, unit, sort_order)
 WHERE NOT EXISTS (SELECT 1 FROM supply_items);
+
+-- ---- Contact form messages ----
+CREATE TABLE IF NOT EXISTS contact_messages (
+    id             BIGSERIAL PRIMARY KEY,
+    reference      TEXT        NOT NULL UNIQUE,          -- MS-XXXXXX, shown to the customer
+    customer_name  TEXT        NOT NULL,
+    customer_email TEXT        NOT NULL,
+    customer_phone TEXT,
+    service        TEXT        NOT NULL,                 -- what the customer chose in the drop-down
+    message        TEXT        NOT NULL,
+    status         TEXT        NOT NULL DEFAULT 'new',   -- new | handled
+    ip_hash        TEXT,                                 -- salted hash, used only for rate limiting
+    created_at     TIMESTAMPTZ NOT NULL DEFAULT now(),
+    handled_at     TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_contact_messages_ip ON contact_messages (ip_hash, created_at);

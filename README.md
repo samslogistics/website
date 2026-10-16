@@ -19,6 +19,8 @@ api/                        Vercel function entry points (URL = /api/...)
   supplies.js               public: GET /api/supplies (catalogue) and POST /api/supplies (order request)
   admin/supply-items.js     admin: add, edit, hide or delete catalogue products and set prices
   admin/supply-orders.js    admin: list supply orders, confirm, complete or cancel
+  contact.js                public: POST /api/contact (message from the home page contact form)
+  admin/messages.js         admin: list contact messages, mark handled, reopen or delete
 backend/lib                 shared server code (db, auth, helpers, constants, notify = owner alerts)
 backend/db/schema.sql       database schema
 backend/tests               node:test unit tests (npm test)
@@ -54,7 +56,7 @@ Format `SL-<GH|JM|UK>-XXXXXX`, generated when you create a shipment. Customers o
 - In **/admin -> Supplies** set the prices (blank = "Price on request"), add products, or untick "Show on website" to hide one.
 - In **/admin -> Orders** confirm, complete or cancel orders. Each order keeps its own copy of product names and prices, so changing the catalogue later never changes past orders.
 - Order references look like `SO-XXXXXX`.
-- Vercel's free plan allows 12 serverless functions per project; this project uses 9 (3 public, 6 admin).
+- Vercel's free plan allows 12 serverless functions per project; this project uses 11 (4 public, 7 admin). One slot is left; if you need more, merge related endpoints first.
 
 ## Owner alerts (email + WhatsApp)
 
@@ -71,7 +73,15 @@ When a booking request or supply order arrives, you get a short alert telling yo
 - Redeploy after adding or changing a variable; variables only apply to new deployments.
 - CallMeBot is a free service for personal use. If it ever stops working, only `sendWhatsApp()` in `backend/lib/notify.js` needs replacing.
 
+## Contact form
+
+- The home page contact form posts to `/api/contact` (our own backend; the old third-party form service is no longer used and its account can be closed).
+- Run the contact section of `backend/db/schema.sql` once in Neon (safe to re-run). It adds the `contact_messages` table.
+- Messages show up in **/admin -> Messages** (with a badge for new ones). Reply by email or call from the message, mark it handled, reopen it, or delete it for good (also the way to honour a deletion request).
+- Each message also triggers an owner alert (see above). The form needs a ticked consent box, has a hidden spam-trap field, and allows 5 messages per visitor per hour.
+- Reference format `MS-XXXXXX`.
+
 ## Next phases
 
-- Own contact form (replaces Web3Forms), saving messages in the database and sending alerts
+- `Admin_manual.md`: a manual for whoever works as an admin
 - Alerts on status changes for customers

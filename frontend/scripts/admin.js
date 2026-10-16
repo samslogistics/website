@@ -57,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loadList();
         refreshBadge();
         refreshOrdersBadge();
+        refreshMessagesBadge();
     }
 
     function showPanel(which) {
@@ -208,7 +209,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // ---- tabs ----
-    const TABS = ['shipments', 'requests', 'orders', 'supplies'];
+    const TABS = ['shipments', 'requests', 'orders', 'messages', 'supplies'];
 
     function showTab(name) {
         for (const tab of TABS) {
@@ -224,6 +225,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (name === 'orders') {
             if (!currentOrder) showOrderPanel('empty');
             loadOrders().catch(() => {});
+        }
+        if (name === 'messages') {
+            if (!currentMessage) showMessagePanel('empty');
+            loadMessages().catch(() => {});
         }
         if (name === 'supplies') loadItems().catch(() => {});
     }
@@ -440,6 +445,96 @@ document.addEventListener('DOMContentLoaded', () => {
     $('o-confirm').addEventListener('click', () => orderAction('confirm'));
     $('o-complete').addEventListener('click', () => orderAction('complete'));
     $('o-cancel').addEventListener('click', () => orderAction('cancel', currentOrder ? `Cancel order ${currentOrder.reference}?` : ''));
+
+    // ---- contact messages ----
+    let currentMessage = null;
+
+    function setMessagesBadge(n) {
+        const badge = $('messages-badge');
+        badge.textContent = n;
+        badge.classList.toggle('hidden', !n);
+    }
+
+    async function refreshMessagesBadge() {
+        try {
+            const { newCount } = await api('/api/admin/messages?status=new');
+            setMessagesBadge(newCount);
+        } catch { /* ignore */ }
+    }
+
+    function showMessagePanel(which) {
+        $('message-panel-empty').classList.toggle('hidden', which !== 'empty');
+        $('message-detail').classList.toggle('hidden', which !== 'detail');
+    }
+
+    async function loadMessages() {
+        const status = $('message-filter').value;
+        const { messages, newCount } = await api('/api/admin/messages?status=' + encodeURIComponent(status));
+        setMessagesBadge(newCount);
+        $('message-rows').replaceChildren(...messages.map((m) => {
+            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentMessage && m.id === currentMessage.id ? ' bg-yellow-50' : ''));
+            tr.append(
+                el('td', 'px-4 py-3 font-semibold text-sams-blue', m.reference),
+                el('td', 'px-4 py-3', m.customer_name),
+                el('td', 'px-4 py-3', m.service),
+                el('td', 'px-4 py-3', fmt(m.created_at)),
+                el('td', 'px-4 py-3', m.status),
+            );
+            tr.addEventListener('click', () => openMessage(m));
+            return tr;
+        }));
+        $('message-empty').classList.toggle('hidden', messages.length > 0);
+    }
+
+    function openMessage(m) {
+        currentMessage = m;
+        showError($('m-error'), '');
+        $('m-ref').textContent = m.reference;
+        $('m-meta').textContent = `${m.service} \u00B7 ${m.status}`;
+        const rows = [
+            ['Name', m.customer_name], ['Email', m.customer_email], ['Phone', m.customer_phone],
+            ['Received', fmt(m.created_at)],
+        ].filter(([, v]) => v);
+        $('m-info').replaceChildren(...rows.flatMap(([k, v]) => [
+            el('dt', 'text-gray-500', k),
+            el('dd', 'col-span-2 break-words', v),
+        ]));
+        $('m-body').textContent = m.message;
+        // The address is encoded so it can never add extra mail headers (cc/bcc/subject) to the link.
+        $('m-reply').href = 'mailto:' + encodeURIComponent(m.customer_email) +
+            '?subject=' + encodeURIComponent(`Re: your message to Sam's Logistics (${m.reference})`);
+        const call = $('m-call');
+        call.classList.toggle('hidden', !m.customer_phone);
+        if (m.customer_phone) call.href = 'tel:' + m.customer_phone.replace(/[^0-9+]/g, '');
+        else call.removeAttribute('href');
+        $('m-handle').classList.toggle('hidden', m.status !== 'new');
+        $('m-reopen').classList.toggle('hidden', m.status !== 'handled');
+        showMessagePanel('detail');
+    }
+
+    $('message-filter').addEventListener('change', () => {
+        currentMessage = null;
+        showMessagePanel('empty');
+        loadMessages().catch(() => {});
+    });
+
+    async function messageAction(action, confirmText) {
+        if (!currentMessage) return;
+        if (confirmText && !confirm(confirmText)) return;
+        showError($('m-error'), '');
+        try {
+            await api('/api/admin/messages', { method: 'POST', body: { id: currentMessage.id, action } });
+            currentMessage = null;
+            showMessagePanel('empty');
+            await loadMessages();
+        } catch (err) {
+            showError($('m-error'), err.message);
+        }
+    }
+    $('m-handle').addEventListener('click', () => messageAction('handle'));
+    $('m-reopen').addEventListener('click', () => messageAction('reopen'));
+    $('m-delete').addEventListener('click', () => messageAction('delete',
+        currentMessage ? `Delete message ${currentMessage.reference} for good? This cannot be undone.` : ''));
 
     // ---- supplies catalogue ----
     let currentItem = null; // null = nothing open, {} = new product

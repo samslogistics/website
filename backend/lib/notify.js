@@ -122,10 +122,32 @@ export function supplyOrderAlert(o) {
   };
 }
 
+export function contactAlert(m) {
+  const text = [
+    `New website message ${m.reference}`,
+    '',
+    `Name: ${m.name}`,
+    `Email: ${m.email}`,
+    `Phone: ${orBlank(m.phone)}`,
+    `About: ${m.service}`,
+    '',
+    m.message,
+  ].join('\n') + footer();
+  return {
+    subject: `New website message ${m.reference} - ${m.service}`,
+    text,
+    short: `New website message ${m.reference} (${m.service}). Check the admin: ${adminUrl()}`,
+    replyTo: m.email || undefined,
+  };
+}
+
 // Used by the handlers: build + send, swallow everything.
 export async function alertBooking(r) {
   try { await notifyOwner(bookingAlert(r)); } catch (e) { console.error('booking alert failed:', e?.message); }
 }
 export async function alertSupplyOrder(o) {
   try { await notifyOwner(supplyOrderAlert(o)); } catch (e) { console.error('order alert failed:', e?.message); }
+}
+export async function alertContactMessage(m) {
+  try { await notifyOwner(contactAlert(m)); } catch (e) { console.error('contact alert failed:', e?.message); }
 }

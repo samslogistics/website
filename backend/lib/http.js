@@ -100,3 +100,12 @@ export function parseOrderLines(items) {
   }
   return [...merged].map(([id, qty]) => ({ id, qty }));
 }
+
+// ---- Contact form ----
+export function generateMessageRef() {
+  let tail = '';
+  const bytes = new Uint8Array(6);
+  globalThis.crypto.getRandomValues(bytes);
+  for (const b of bytes) tail += REF_ALPHABET[b % REF_ALPHABET.length];
+  return `MS-${tail}`;
+}

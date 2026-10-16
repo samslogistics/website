@@ -68,6 +68,9 @@
                 <button id="tab-btn-orders" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">
                     Orders <span id="orders-badge" class="hidden ml-1 rounded-full bg-sams-gold text-sams-blue text-xs font-bold px-2 py-0.5"></span>
                 </button>
+                <button id="tab-btn-messages" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">
+                    Messages <span id="messages-badge" class="hidden ml-1 rounded-full bg-sams-gold text-sams-blue text-xs font-bold px-2 py-0.5"></span>
+                </button>
                 <button id="tab-btn-supplies" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">Supplies</button>
             </div>
 
@@ -283,6 +286,62 @@
                             </div>
                         </div>
                         <p id="o-done" class="hidden border-t pt-4 text-sm text-gray-600"></p>
+                    </div>
+                </aside>
+            </div>
+
+            <!-- Contact messages tab -->
+            <div id="tab-messages" class="hidden grid lg:grid-cols-3 gap-6">
+                <div class="lg:col-span-2 space-y-4">
+                    <div class="flex flex-wrap items-center gap-3 justify-between">
+                        <h1 class="font-heading font-bold text-xl text-sams-blue">Contact messages</h1>
+                        <select id="message-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                            <option value="new">New</option>
+                            <option value="handled">Handled</option>
+                            <option value="all">All</option>
+                        </select>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead class="bg-gray-100 text-left text-gray-600">
+                                <tr>
+                                    <th class="px-4 py-3">Reference</th>
+                                    <th class="px-4 py-3">From</th>
+                                    <th class="px-4 py-3">About</th>
+                                    <th class="px-4 py-3">Received</th>
+                                    <th class="px-4 py-3">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="message-rows"></tbody>
+                        </table>
+                        <p id="message-empty" class="hidden p-6 text-center text-gray-500">No messages here.</p>
+                    </div>
+                </div>
+
+                <aside>
+                    <div id="message-panel-empty" class="bg-white rounded-2xl shadow p-6 text-gray-500 text-sm">
+                        Select a message to read it.
+                    </div>
+                    <div id="message-detail" class="hidden bg-white rounded-2xl shadow p-6 space-y-4">
+                        <div>
+                            <p class="text-xs text-gray-500">Message</p>
+                            <p id="m-ref" class="font-heading font-bold text-lg text-sams-blue break-all"></p>
+                            <p id="m-meta" class="text-sm text-gray-600"></p>
+                        </div>
+                        <dl id="m-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
+                        <p id="m-body" class="text-sm whitespace-pre-wrap break-words bg-gray-50 rounded-lg p-3"></p>
+                        <div class="flex flex-wrap gap-2">
+                            <a id="m-reply" class="flex-1 text-center bg-sams-blue text-white font-semibold rounded-lg py-2 px-3 hover:bg-sams-light-blue transition">Reply by email</a>
+                            <a id="m-call" class="hidden flex-1 text-center border border-gray-300 font-semibold rounded-lg py-2 px-3 hover:bg-gray-50 transition">Call</a>
+                        </div>
+                        <div class="border-t pt-4 space-y-3">
+                            <p id="m-error" class="hidden text-sm text-red-600"></p>
+                            <div class="flex flex-wrap gap-2">
+                                <button id="m-handle" type="button" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 px-3 hover:bg-sams-light-blue transition">Mark as handled</button>
+                                <button id="m-reopen" type="button" class="flex-1 border border-gray-300 font-semibold rounded-lg py-2 px-3 hover:bg-gray-50 transition">Reopen</button>
+                                <button id="m-delete" type="button" class="px-4 rounded-lg border border-red-300 text-red-700 text-sm hover:bg-red-50">Delete</button>
+                            </div>
+                        </div>
                     </div>
                 </aside>
             </div>

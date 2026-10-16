@@ -30,49 +30,53 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- Web3Forms Contact Handler ---
+    // --- Contact form (our own backend: POST /api/contact) ---
     const contactForm = document.getElementById('contact-form');
     const contactFormStatus = document.getElementById('contact-form-status');
+    const contactSubmit = document.getElementById('contact-submit');
 
-    if (contactForm && contactFormStatus) {
+    if (contactForm && contactFormStatus && contactSubmit) {
+        const setContactStatus = (message, type) => {
+            const colours = { error: 'text-red-600', success: 'text-green-700', info: 'text-gray-600' };
+            contactFormStatus.className = 'mt-3 text-center text-sm font-semibold ' + colours[type];
+            contactFormStatus.textContent = message;
+        };
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             if (!contactForm.reportValidity()) return;
 
-            contactFormStatus.classList.remove('hidden', 'text-red-600', 'text-green-600');
-            contactFormStatus.classList.add('text-gray-600');
-            contactFormStatus.innerText = 'Sending message...';
+            const value = (id) => document.getElementById(id).value;
+            const payload = {
+                name: `${value('contact-first-name').trim()} ${value('contact-last-name').trim()}`.trim(),
+                email: value('contact-email'),
+                phone: value('contact-phone'),
+                service: value('contact-service'),
+                message: value('contact-message'),
+                website: value('contact-website'),
+                consent: document.getElementById('contact-consent').checked,
+            };
 
-            const formData = new FormData(contactForm);
-            const json = JSON.stringify(Object.fromEntries(formData));
+            contactSubmit.disabled = true;
+            setContactStatus('Sending message...', 'info');
 
             try {
-                const response = await fetch('https://api.web3forms.com/submit', {
+                const res = await fetch('/api/contact', {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: json
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload),
                 });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    contactFormStatus.classList.remove('text-gray-600');
-                    contactFormStatus.classList.add('text-green-600');
-                    contactFormStatus.innerText = 'Thank you! Your message has been sent successfully.';
-                    contactForm.reset();
-                } else {
-                    contactFormStatus.classList.remove('text-gray-600');
-                    contactFormStatus.classList.add('text-red-600');
-                    contactFormStatus.innerText = result.message || 'Something went wrong. Please try again.';
+                const data = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    setContactStatus(data.error || 'Something went wrong. Please try again or call us.', 'error');
+                    return;
                 }
+                contactForm.reset();
+                setContactStatus(`Thank you! Your message has been sent (reference ${data.reference}). We will get back to you as soon as possible.`, 'success');
             } catch (error) {
-                contactFormStatus.classList.remove('text-gray-600');
-                contactFormStatus.classList.add('text-red-600');
-                contactFormStatus.innerText = 'Network error. Please check your connection and try again.';
+                setContactStatus('Network error. Please check your connection and try again.', 'error');
+            } finally {
+                contactSubmit.disabled = false;
             }
         });
     }
