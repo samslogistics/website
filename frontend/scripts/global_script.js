@@ -42,6 +42,12 @@ document.addEventListener('DOMContentLoaded', () => {
             contactFormStatus.textContent = message;
         };
 
+        // "Clear form" button: the browser empties the fields, we also clear the message under the form.
+        contactForm.addEventListener('reset', () => {
+            contactFormStatus.className = 'mt-3 hidden text-center text-sm font-semibold';
+            contactFormStatus.textContent = '';
+        });
+
         contactForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!contactForm.reportValidity()) return;
@@ -245,6 +251,12 @@ document.addEventListener('DOMContentLoaded', () => {
             bookingStatus.textContent = message;
         };
 
+        // "Clear form" button: the browser empties the fields, we also clear the message under the form.
+        bookingForm.addEventListener('reset', () => {
+            bookingStatus.className = 'mt-3 hidden text-center text-sm font-semibold';
+            bookingStatus.textContent = '';
+        });
+
         bookingForm.addEventListener('submit', async (e) => {
             e.preventDefault();
             if (!bookingForm.reportValidity()) return;
@@ -416,6 +428,14 @@ document.addEventListener('DOMContentLoaded', () => {
             addressInput.required = delivery;
         };
         supplyForm.querySelectorAll('input[name="supply-fulfilment"]').forEach((radio) => radio.addEventListener('change', syncAddress));
+
+        // "Clear form" button: empty the message now, and once the browser has put the fields back,
+        // bring the total and the delivery-address box in line with them.
+        supplyForm.addEventListener('reset', () => {
+            supplyStatus.className = 'hidden text-center text-sm font-semibold';
+            supplyStatus.textContent = '';
+            setTimeout(() => { syncAddress(); updateTotal(); }, 0);
+        });
 
         supplyForm.addEventListener('submit', async (e) => {
             e.preventDefault();
