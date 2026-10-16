@@ -19,7 +19,7 @@ api/                        Vercel function entry points (URL = /api/...)
   supplies.js               public: GET /api/supplies (catalogue) and POST /api/supplies (order request)
   admin/supply-items.js     admin: add, edit, hide or delete catalogue products and set prices
   admin/supply-orders.js    admin: list supply orders, confirm, complete or cancel
-backend/lib                 shared server code (db, auth, helpers, constants)
+backend/lib                 shared server code (db, auth, helpers, constants, notify = owner alerts)
 backend/db/schema.sql       database schema
 backend/tests               node:test unit tests (npm test)
 ```
@@ -56,6 +56,22 @@ Format `SL-<GH|JM|UK>-XXXXXX`, generated when you create a shipment. Customers o
 - Order references look like `SO-XXXXXX`.
 - Vercel's free plan allows 12 serverless functions per project; this project uses 9 (3 public, 6 admin).
 
+## Owner alerts (email + WhatsApp)
+
+When a booking request or supply order arrives, you get a short alert telling you to check `/admin`. Each channel switches on by itself when its Vercel environment variables exist (Production + Preview); with none set, nothing is sent and nothing breaks.
+
+| Channel | Variables |
+| --- | --- |
+| Email (Resend) | `RESEND_API_KEY`, `ALERT_EMAIL_TO` (optional `ALERT_EMAIL_FROM`) |
+| WhatsApp (CallMeBot) | `CALLMEBOT_PHONE` (with country code, e.g. `+447...`), `CALLMEBOT_APIKEY` |
+| Link in alerts | `SITE_URL` (optional, defaults to `https://samslogistics.co.uk`) |
+
+- The email has the full details (customer, items, addresses). The WhatsApp message only has the reference and a link, never phone numbers or addresses.
+- An alert can never block or fail a customer's request: each call times out after 3 seconds and failures are only logged in Vercel -> Logs.
+- Redeploy after adding or changing a variable; variables only apply to new deployments.
+- CallMeBot is a free service for personal use. If it ever stops working, only `sendWhatsApp()` in `backend/lib/notify.js` needs replacing.
+
 ## Next phases
 
-- Email/WhatsApp notification on new requests, new orders and status changes
+- Own contact form (replaces Web3Forms), saving messages in the database and sending alerts
+- Alerts on status changes for customers

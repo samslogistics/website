@@ -284,3 +284,109 @@ test('admin supply endpoints need a session and validate input', async () => {
     assert.equal(res.statusCode, 400, JSON.stringify(body));
   }
 });
+
+// ---------- owner alerts (email + WhatsApp) ----------
+const notify = await import('../lib/notify.js');
+const ALERT_ENV = ['RESEND_API_KEY', 'ALERT_EMAIL_TO', 'ALERT_EMAIL_FROM', 'CALLMEBOT_PHONE', 'CALLMEBOT_APIKEY', 'SITE_URL'];
+
+async function withFetch(fake, fn) {
+  const realFetch = globalThis.fetch;
+  const saved = Object.fromEntries(ALERT_ENV.map((k) => [k, process.env[k]]));
+  globalThis.fetch = fake;
+  try { return await fn(); } finally {
+    globalThis.fetch = realFetch;
+    for (const k of ALERT_ENV) { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; }
+  }
+}
+
+const sampleBooking = {
+  reference: 'BR-ABC234', service: 'sea_freight', destination: 'Ghana', name: 'Ama Mensah',
+  phone: '07123456789', email: 'ama@example.com', pickup: '1 High St, London', delivery: 'Accra',
+  preferredDate: '2026-11-01', description: '2 barrels',
+};
+const sampleOrder = {
+  reference: 'SO-ABC234', name: 'John Payne', phone: '07123456789', email: '', fulfilment: 'delivery',
+  address: '5 Road, London', note: '', items: [
+    { name: 'Cardboard box - small', qty: 3, unitPricePence: 1250 },
+    { name: 'Shipping barrel - large', qty: 1, unitPricePence: null },
+  ],
+};
+
+test('alerts are skipped (no network call) when no channel is configured', async () => {
+  let calls = 0;
+  await withFetch(async () => { calls++; return { ok: true }; }, async () => {
+    for (const k of ALERT_ENV) delete process.env[k];
+    const out = await notify.notifyOwner(notify.bookingAlert(sampleBooking));
+    assert.deepEqual(out, ['skipped', 'skipped']);
+    assert.equal(calls, 0);
+  });
+});
+
+test('email goes to Resend with bearer key, reply_to and plain text', async () => {
+  const seen = [];
+  await withFetch(async (url, init) => { seen.push({ url, init }); return { ok: true }; }, async () => {
+    process.env.RESEND_API_KEY = 're_test'; process.env.ALERT_EMAIL_TO = 'owner@example.com';
+    delete process.env.CALLMEBOT_PHONE; delete process.env.CALLMEBOT_APIKEY;
+    const out = await notify.notifyOwner(notify.bookingAlert(sampleBooking));
+    assert.deepEqual(out, ['sent', 'skipped']);
+    assert.equal(seen.length, 1);
+    assert.equal(seen[0].url, 'https://api.resend.com/emails');
+    assert.equal(seen[0].init.headers.Authorization, 'Bearer re_test');
+    const body = JSON.parse(seen[0].init.body);
+    assert.deepEqual(body.to, ['owner@example.com']);
+    assert.match(body.from, /onboarding@resend\.dev/);
+    assert.equal(body.reply_to, 'ama@example.com');
+    assert.match(body.subject, /BR-ABC234.*Sea Freight/);
+    assert.match(body.text, /07123456789/); // the email has the full details
+    assert.match(body.text, /https:\/\/samslogistics\.co\.uk\/admin/);
+  });
+});
+
+test('WhatsApp message is URL-encoded and carries no phone number or address', async () => {
+  const seen = [];
+  await withFetch(async (url) => { seen.push(url); return { ok: true }; }, async () => {
+    process.env.CALLMEBOT_PHONE = '+447700900123'; process.env.CALLMEBOT_APIKEY = 'k&1';
+    delete process.env.RESEND_API_KEY; delete process.env.ALERT_EMAIL_TO;
+    const out = await notify.notifyOwner(notify.supplyOrderAlert(sampleOrder));
+    assert.deepEqual(out, ['skipped', 'sent']);
+    const u = new URL(seen[0]);
+    assert.equal(u.origin + u.pathname, 'https://api.callmebot.com/whatsapp.php');
+    assert.equal(u.searchParams.get('phone'), '+447700900123');
+    assert.equal(u.searchParams.get('apikey'), 'k&1');
+    const text = u.searchParams.get('text');
+    assert.match(text, /SO-ABC234/);
+    assert.match(text, /4 items/);
+    assert.ok(!/0712|Road|Payne/.test(text), 'no personal data in WhatsApp text');
+  });
+});
+
+test('a failing or erroring channel never throws and does not stop the other', async () => {
+  const errors = []; const realErr = console.error; console.error = (...a) => errors.push(a.join(' '));
+  try {
+    await withFetch(async (url) => {
+      if (url.includes('resend')) return { ok: false, status: 500 };
+      throw new Error('network down');
+    }, async () => {
+      process.env.RESEND_API_KEY = 're_test'; process.env.ALERT_EMAIL_TO = 'o@example.com';
+      process.env.CALLMEBOT_PHONE = '+447700900123'; process.env.CALLMEBOT_APIKEY = 'k';
+      assert.deepEqual(await notify.notifyOwner(notify.bookingAlert(sampleBooking)), ['failed', 'failed']);
+      await notify.alertBooking(sampleBooking); // wrapper must resolve too
+      await notify.alertSupplyOrder({ ...sampleOrder, items: null }); // bad data must not throw
+    });
+    assert.ok(errors.some((e) => /email failed.*HTTP 500/.test(e)));
+    assert.ok(errors.every((e) => !/Ama|0712|Road/.test(e)), 'logs contain no customer data');
+  } finally { console.error = realErr; }
+});
+
+test('supply order alert totals priced lines and flags items priced on request', () => {
+  const a = notify.supplyOrderAlert(sampleOrder);
+  assert.match(a.text, /3 x Cardboard box - small - £37\.50/);
+  assert.match(a.text, /1 x Shipping barrel - large - price on request/);
+  assert.match(a.text, /Total so far: £37\.50 \(\+ 1 item priced on request\)/);
+  assert.match(a.text, /Address: 5 Road, London/);
+  const pickup = notify.supplyOrderAlert({ ...sampleOrder, fulfilment: 'collection', address: null, items: [sampleOrder.items[0]] });
+  assert.match(pickup.text, /Total: £37\.50/);
+  assert.ok(!/Address:/.test(pickup.text));
+  assert.equal(notify.supplyOrderAlert({ ...sampleOrder, email: 'a@b.co' }).replyTo, 'a@b.co');
+  assert.equal(a.replyTo, undefined);
+});

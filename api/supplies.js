@@ -8,6 +8,7 @@ import {
   json, methodGuard, bodyOf, clean, clientIp, generateOrderRef, parseOrderLines,
   EMAIL_RE, PHONE_RE,
 } from '../backend/lib/http.js';
+import { alertSupplyOrder } from '../backend/lib/notify.js';
 
 const MAX_PER_HOUR = 5; // per visitor (salted IP hash)
 
@@ -97,10 +98,19 @@ async function placeOrder(req, res) {
           INSERT INTO supply_order_items (order_id, item_id, name, unit_price_pence, quantity)
           SELECT o.id, v.id, v.name, v.price_pence, v.qty FROM o CROSS JOIN valid v
           ORDER BY v.sort_order, v.id
-          RETURNING order_id`;
+          RETURNING order_id, name, unit_price_pence, quantity`;
         if (!rows.length) {
           return json(res, 400, { error: 'Some items are no longer available. Please refresh the page and try again.' });
         }
+        // Tell the owner (email / WhatsApp). Never throws, never blocks the customer's order.
+        await alertSupplyOrder({
+          reference, name, phone, email, fulfilment, address: deliveryAddress, note,
+          items: rows.map((r) => ({
+            name: r.name,
+            qty: Number(r.quantity),
+            unitPricePence: r.unit_price_pence === null ? null : Number(r.unit_price_pence),
+          })),
+        });
         return json(res, 201, { reference });
       } catch (err) {
         if (err?.code !== '23505') throw err; // retry only on duplicate reference
