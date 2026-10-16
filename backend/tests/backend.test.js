@@ -390,3 +390,81 @@ test('supply order alert totals priced lines and flags items priced on request',
   assert.equal(notify.supplyOrderAlert({ ...sampleOrder, email: 'a@b.co' }).replyTo, 'a@b.co');
   assert.equal(a.replyTo, undefined);
 });
+
+// ---------- contact form ----------
+const { generateMessageRef } = await import('../lib/http.js');
+const { CONTACT_SERVICES } = await import('../lib/constants.js');
+const contact = (await import('../../api/contact.js')).default;
+const adminMessages = (await import('../../api/admin/messages.js')).default;
+
+const validMessage = () => ({
+  name: 'Ama Mensah', email: 'ama@example.com', phone: '07123456789', service: 'Sea Freight',
+  message: 'How much for two barrels to Accra?', website: '', consent: true,
+});
+async function postContact(body, method = 'POST') {
+  const res = mockRes();
+  await contact({ method, headers: {}, body }, res);
+  return res;
+}
+
+test('contact helpers: message reference format and service list', () => {
+  assert.match(generateMessageRef(), /^MS-[A-HJKMNP-Z2-9]{6}$/);
+  assert.notEqual(generateMessageRef(), generateMessageRef());
+  for (const s of ['Air Freight', 'Courier Service', 'Packaging Supplies', 'Other / general question']) {
+    assert.ok(CONTACT_SERVICES.includes(s), s);
+  }
+});
+
+test('POST /api/contact rejects bad input before touching the database', async () => {
+  assert.equal((await postContact(validMessage(), 'GET')).statusCode, 405);
+  for (const [field, value] of [
+    ['name', '  '], ['email', ''], ['email', 'not-an-email'], ['phone', 'abc'], ['service', ''],
+    ['service', 'Teleportation'], ['message', '   '], ['consent', false], ['consent', 'true'],
+  ]) {
+    const res = await postContact({ ...validMessage(), [field]: value });
+    assert.equal(res.statusCode, 400, `${field}=${JSON.stringify(value)}`);
+    assert.ok(res.body.error);
+  }
+  // phone is optional
+  const ok = await postContact({ ...validMessage(), phone: '' });
+  assert.notEqual(ok.statusCode, 400); // passes validation (500 here only because the test has no database)
+});
+
+test('contact honeypot returns a fake success without saving', async () => {
+  const res = await postContact({ ...validMessage(), website: 'http://spam.example' });
+  assert.equal(res.statusCode, 201);
+  assert.match(res.body.reference, /^MS-/);
+});
+
+test('admin messages need a session and validate input', async () => {
+  for (const method of ['GET', 'POST']) {
+    const res = mockRes();
+    await adminMessages({ method, query: {}, headers: {}, body: {} }, res);
+    assert.equal(res.statusCode, 401, method);
+  }
+  const headers = { cookie: cookieOf(sessionCookie()) };
+  for (const body of [{}, { id: 'x', action: 'handle' }, { id: 0, action: 'handle' }, { id: 1.5, action: 'handle' },
+    { id: 1, action: 'explode' }, { id: 1 }]) {
+    const res = mockRes();
+    await adminMessages({ method: 'POST', headers, query: {}, body }, res);
+    assert.equal(res.statusCode, 400, JSON.stringify(body));
+  }
+  const del = mockRes();
+  await adminMessages({ method: 'DELETE', headers, query: {} }, del);
+  assert.equal(del.statusCode, 405);
+});
+
+test('contact alert: email has the full message with reply-to, WhatsApp text has no personal data', () => {
+  const a = notify.contactAlert({
+    reference: 'MS-ABC234', name: 'Ama Mensah', email: 'ama@example.com', phone: '07123456789',
+    service: 'Sea Freight', message: 'How much for two barrels?\nThanks',
+  });
+  assert.match(a.subject, /MS-ABC234.*Sea Freight/);
+  assert.match(a.text, /Email: ama@example\.com/);
+  assert.match(a.text, /How much for two barrels\?\nThanks/);
+  assert.match(a.text, /https:\/\/samslogistics\.co\.uk\/admin/);
+  assert.equal(a.replyTo, 'ama@example.com');
+  assert.match(a.short, /MS-ABC234/);
+  assert.ok(!/Ama|0712|barrels/.test(a.short), 'no personal data in the WhatsApp text');
+  assert.match(notify.contactAlert({ reference: 'MS-X', name: 'A', email: 'a@b.co', service: 'Air Freight', message: 'hi' }).text, /Phone: -/);
+});
