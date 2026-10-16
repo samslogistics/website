@@ -7,8 +7,38 @@ body {
 }
 
 .hero-background {
-    background-image: url('https://placehold.co/1920x1080/002654/FFFFFF?text=Globe+Cargo+Ship+Airplane');
+    background-image: url('../../assets/images/hero-bg.webp');
     mix-blend-mode: luminosity;
+    /* Slow, gentle drift: the photo zooms and pans a little, back and forth */
+    animation: hero-drift 28s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+@keyframes hero-drift {
+    from { transform: scale(1.04) translate3d(0, 0, 0); }
+    to   { transform: scale(1.14) translate3d(-1.5%, -1%, 0); }
+}
+
+/* Hero text fades up one piece at a time on page load.
+   Uses the separate `translate` property so it never clashes with the badge's tilt. */
+.hero-copy > * {
+    animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-copy > *:nth-child(1) { animation-delay: 0.10s; }
+.hero-copy > *:nth-child(2) { animation-delay: 0.25s; }
+.hero-copy > *:nth-child(3) { animation-delay: 0.40s; }
+.hero-copy > *:nth-child(4) { animation-delay: 0.55s; }
+.hero-copy > *:nth-child(5) { animation-delay: 0.70s; }
+.hero-copy > *:nth-child(6) { animation-delay: 0.85s; }
+
+@keyframes hero-rise {
+    from { opacity: 0; translate: 0 18px; }
+    to   { opacity: 1; translate: 0 0; }
+}
+
+/* Visitors who ask their device for less motion get a still hero */
+@media (prefers-reduced-motion: reduce) {
+    .hero-background, .hero-copy > * { animation: none; }
 }
 
 .welcome-marquee {
