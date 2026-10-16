@@ -7,7 +7,12 @@ body {
 }
 
 .hero-background {
-    background-image: url('https://placehold.co/1920x1080/002654/FFFFFF?text=Globe+Cargo+Ship+Airplane');
+    /* Self-hosted brand gradient (no third-party image). Swap for a real photo later:
+       background-image: url('../../assets/images/your-hero.webp'); */
+    background-image:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.55), transparent 45%),
+        radial-gradient(circle at 85% 75%, rgba(255, 255, 255, 0.35), transparent 40%),
+        linear-gradient(135deg, #002654 0%, #0a4d9c 100%);
     mix-blend-mode: luminosity;
 }
 
