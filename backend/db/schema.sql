@@ -133,3 +133,12 @@ CREATE TABLE IF NOT EXISTS contact_messages (
 
 CREATE INDEX IF NOT EXISTS idx_contact_messages_status ON contact_messages (status, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_contact_messages_ip ON contact_messages (ip_hash, created_at);
+
+-- ---- Admin login throttling ----
+CREATE TABLE IF NOT EXISTS admin_login_failures (
+    id         BIGSERIAL PRIMARY KEY,
+    ip_hash    TEXT        NOT NULL,                     -- salted hash, never the raw IP
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE INDEX IF NOT EXISTS idx_admin_login_failures_ip ON admin_login_failures (ip_hash, created_at);
