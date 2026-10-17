@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vercel dev",
     "test": "node --test backend/tests/*.test.js",
+    "build:pages": "node scripts/build-pages.mjs",
     "build:css": "tailwindcss -c tailwind.config.cjs -i frontend/styles/tailwind.input.css -o frontend/styles/tailwind.css --minify"
   },
   "dependencies": {

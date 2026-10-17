@@ -555,3 +555,19 @@ test('customer email: texts are right and customer input never reaches subject o
   assert.ok(!/Location:|Note:/.test(bare.text));
   assert.match(bare.text, /Hello there,/);
 });
+
+// ---- shared header/footer of the legal pages ----
+test('legal pages are in sync with the shared header and footer', async () => {
+  const fs = await import('node:fs');
+  const { render, PAGES } = await import('../../scripts/build-pages.mjs');
+  assert.equal(PAGES.length, 4);
+  for (const page of PAGES) {
+    const html = fs.readFileSync(new URL(`../../${page}.html`, import.meta.url), 'utf8');
+    assert.equal(render(page, html), html, `${page}.html is out of date, run: npm run build:pages`);
+    // exactly one footer link is highlighted: the page itself
+    const active = [...html.matchAll(/href="(\w+)\.html" class="text-sams-gold font-bold/g)].map((m) => m[1]);
+    assert.deepEqual(active, [page], `${page}.html highlights the wrong footer link`);
+    assert.equal((html.match(/<header /g) || []).length, 1);
+    assert.equal((html.match(/<footer /g) || []).length, 1);
+  }
+});
