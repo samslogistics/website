@@ -9,12 +9,12 @@ import { SERVICES, FULFILMENT } from './constants.js';
 
 const TIMEOUT_MS = 3000;
 
-const siteUrl = () => (process.env.SITE_URL || 'https://samslogistics.co.uk').replace(/\/+$/, '');
+export const siteUrl = () => (process.env.SITE_URL || 'https://samslogistics.co.uk').replace(/\/+$/, '');
 const adminUrl = () => `${siteUrl()}/admin`;
 
 export const gbp = (pence) => `£${(pence / 100).toFixed(2)}`;
 
-async function request(url, init = {}) {
+export async function request(url, init = {}) {
   const ctl = new AbortController();
   const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
   try {
@@ -88,18 +88,24 @@ export function bookingAlert(r) {
   };
 }
 
-export function supplyOrderAlert(o) {
-  const fulfilment = FULFILMENT[o.fulfilment] || o.fulfilment;
-  const lines = o.items.map((i) => {
+// Order lines + total as plain text (used by the owner alert and the customer's confirmation).
+export function describeItems(items) {
+  const lines = items.map((i) => {
     const price = i.unitPricePence === null ? 'price on request' : `${gbp(i.unitPricePence * i.qty)}`;
     return `  ${i.qty} x ${i.name} - ${price}`;
   });
-  const priced = o.items.filter((i) => i.unitPricePence !== null);
-  const onRequest = o.items.length - priced.length;
+  const priced = items.filter((i) => i.unitPricePence !== null);
+  const onRequest = items.length - priced.length;
   const sum = priced.reduce((s, i) => s + i.unitPricePence * i.qty, 0);
   const total = onRequest
     ? `Total so far: ${gbp(sum)} (+ ${onRequest} item${onRequest > 1 ? 's' : ''} priced on request)`
     : `Total: ${gbp(sum)}`;
+  return { lines, total };
+}
+
+export function supplyOrderAlert(o) {
+  const fulfilment = FULFILMENT[o.fulfilment] || o.fulfilment;
+  const { lines, total } = describeItems(o.items);
   const count = o.items.reduce((s, i) => s + i.qty, 0);
   const text = [
     `New supply order ${o.reference}`,

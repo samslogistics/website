@@ -468,3 +468,90 @@ test('contact alert: email has the full message with reply-to, WhatsApp text has
   assert.ok(!/Ama|0712|barrels/.test(a.short), 'no personal data in the WhatsApp text');
   assert.match(notify.contactAlert({ reference: 'MS-X', name: 'A', email: 'a@b.co', service: 'Air Freight', message: 'hi' }).text, /Phone: -/);
 });
+
+// ---------- customer emails ----------
+const customerMail = await import('../lib/customerMail.js');
+const CUSTOMER_ENV = [...ALERT_ENV, 'CUSTOMER_EMAIL_FROM', 'REPLY_TO_EMAIL'];
+
+async function withCustomerFetch(fake, fn) {
+  const saved = Object.fromEntries(CUSTOMER_ENV.map((k) => [k, process.env[k]]));
+  try { return await withFetch(fake, fn); } finally {
+    for (const k of CUSTOMER_ENV) { if (saved[k] === undefined) delete process.env[k]; else process.env[k] = saved[k]; }
+  }
+}
+
+test('customer email: skipped without key, without address, or with a bad address', async () => {
+  let calls = 0;
+  await withCustomerFetch(async () => { calls++; return { ok: true }; }, async () => {
+    delete process.env.RESEND_API_KEY;
+    assert.equal(await customerMail.emailBookingReceived(sampleBooking), 'skipped');
+    process.env.RESEND_API_KEY = 're_test';
+    assert.equal(await customerMail.emailBookingReceived({ ...sampleBooking, email: '' }), 'skipped');
+    assert.equal(await customerMail.emailBookingReceived({ ...sampleBooking, email: 'not an email' }), 'skipped');
+    assert.equal(await customerMail.emailSupplyReceived(sampleOrder), 'skipped'); // sample order has no email
+    assert.equal(calls, 0);
+  });
+});
+
+test('customer email: goes to the customer only, reply goes to the business inbox', async () => {
+  const seen = [];
+  await withCustomerFetch(async (url, init) => { seen.push({ url, body: JSON.parse(init.body) }); return { ok: true }; }, async () => {
+    process.env.RESEND_API_KEY = 're_test';
+    process.env.ALERT_EMAIL_FROM = '"Sam\'s Logistics" <alerts@example.com>';
+    delete process.env.CUSTOMER_EMAIL_FROM; delete process.env.REPLY_TO_EMAIL;
+    assert.equal(await customerMail.emailBookingReceived(sampleBooking), 'sent');
+    assert.equal(seen.length, 1);
+    const m = seen[0].body;
+    assert.equal(seen[0].url, 'https://api.resend.com/emails');
+    assert.deepEqual(m.to, ['ama@example.com']);
+    assert.equal(m.from, '"Sam\'s Logistics" <alerts@example.com>');
+    assert.equal(m.reply_to, 'samslogistics.gh@gmail.com');
+    assert.match(m.subject, /BR-ABC234/);
+    assert.match(m.text, /Hello Ama,/);
+    process.env.REPLY_TO_EMAIL = 'help@example.com';
+    process.env.CUSTOMER_EMAIL_FROM = 'Sam <hello@example.com>';
+    await customerMail.emailBookingReceived(sampleBooking);
+    assert.equal(seen[1].body.reply_to, 'help@example.com');
+    assert.equal(seen[1].body.from, 'Sam <hello@example.com>');
+  });
+});
+
+test('customer email: failures and timeouts never throw', async () => {
+  await withCustomerFetch(async () => { throw new Error('network down'); }, async () => {
+    process.env.RESEND_API_KEY = 're_test';
+    assert.equal(await customerMail.emailBookingReceived(sampleBooking), 'failed');
+  });
+  await withCustomerFetch(async () => ({ ok: false, status: 500 }), async () => {
+    process.env.RESEND_API_KEY = 're_test';
+    assert.equal(await customerMail.emailStatusUpdate({ trackingRef: 'SL-GH-ABC234', status: 'Departed UK', name: 'A', email: 'a@example.com' }), 'failed');
+  });
+});
+
+test('customer email: texts are right and customer input never reaches subject or links', () => {
+  process.env.SITE_URL = 'https://samslogistics.co.uk';
+  const evil = { ...sampleBooking, name: 'Eve\r\nBcc: x@evil.com', reference: 'BR-ABC234' };
+  const rec = customerMail.bookingReceivedMail(evil);
+  assert.ok(!/[\r\n]/.test(rec.subject));
+  assert.ok(!rec.subject.includes('Eve'));
+  assert.match(rec.text, /not yet a confirmed booking/);
+
+  const sup = customerMail.supplyReceivedMail({ ...sampleOrder, email: 'x@y.co' });
+  assert.match(sup.text, /3 x Cardboard box - small - £37\.50/);
+  assert.match(sup.text, /price on request/);
+  assert.match(sup.text, /Nothing has been charged/);
+
+  const acc = customerMail.bookingAcceptedMail({ ...sampleBooking, trackingRef: 'SL-GH-ABC234' });
+  assert.match(acc.subject, /SL-GH-ABC234/);
+  assert.match(acc.text, /https:\/\/samslogistics\.co\.uk\/\?track=SL-GH-ABC234#tracking/);
+
+  const dec = customerMail.bookingDeclinedMail(sampleBooking);
+  assert.match(dec.text, /not able to take this one on/);
+
+  const st = customerMail.statusUpdateMail({ trackingRef: 'SL-GH-ABC234', status: 'Arrived at destination', location: 'Tema', note: 'Ready for delivery', name: 'Ama Mensah' });
+  assert.equal(st.subject, 'Shipment SL-GH-ABC234: Arrived at destination');
+  assert.match(st.text, /Location: Tema/);
+  assert.match(st.text, /Note: Ready for delivery/);
+  const bare = customerMail.statusUpdateMail({ trackingRef: 'SL-GH-ABC234', status: 'Departed UK', name: '' });
+  assert.ok(!/Location:|Note:/.test(bare.text));
+  assert.match(bare.text, /Hello there,/);
+});

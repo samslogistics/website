@@ -73,6 +73,19 @@ When a booking request or supply order arrives, you get a short alert telling yo
 - Redeploy after adding or changing a variable; variables only apply to new deployments.
 - CallMeBot is a free service for personal use. If it ever stops working, only `sendWhatsApp()` in `backend/lib/notify.js` needs replacing.
 
+## Customer emails
+
+When a customer gives an email address, they get plain-text service emails (not marketing) from `alerts@samslogistics.co.uk` via Resend. Replies go to the contact inbox.
+
+- **Received**: after a booking request or supplies order.
+- **Accepted**: when you accept a booking in /admin, with the tracking number and a link (`/?track=SL-...`) that opens the tracking lookup automatically.
+- **Declined**: a polite notice when you decline a request.
+- **Status updates**: when you add an update to a shipment, the "Email the customer about this update" box is ticked by default (disabled if no email is saved). Untick it to save quietly.
+
+No email address means no email. A failed send never blocks the booking or the update; /admin tells you if an email could not be sent.
+
+Optional settings: `REPLY_TO_EMAIL` (default `samslogistics.gh@gmail.com`) and `CUSTOMER_EMAIL_FROM` (default `ALERT_EMAIL_FROM`).
+
 ## Contact form
 
 - The home page contact form posts to `/api/contact` (our own backend; the old third-party form service is no longer used and its account can be closed).

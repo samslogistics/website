@@ -9,6 +9,7 @@ import {
   EMAIL_RE, PHONE_RE,
 } from '../backend/lib/http.js';
 import { alertSupplyOrder } from '../backend/lib/notify.js';
+import { emailSupplyReceived } from '../backend/lib/customerMail.js';
 
 const MAX_PER_HOUR = 5; // per visitor (salted IP hash)
 
@@ -103,14 +104,16 @@ async function placeOrder(req, res) {
           return json(res, 400, { error: 'Some items are no longer available. Please refresh the page and try again.' });
         }
         // Tell the owner (email / WhatsApp). Never throws, never blocks the customer's order.
-        await alertSupplyOrder({
-          reference, name, phone, email, fulfilment, address: deliveryAddress, note,
-          items: rows.map((r) => ({
-            name: r.name,
-            qty: Number(r.quantity),
-            unitPricePence: r.unit_price_pence === null ? null : Number(r.unit_price_pence),
-          })),
-        });
+        const items = rows.map((r) => ({
+          name: r.name,
+          qty: Number(r.quantity),
+          unitPricePence: r.unit_price_pence === null ? null : Number(r.unit_price_pence),
+        }));
+        // Also confirm to the customer if they gave an email address (same rules: never throws).
+        await Promise.all([
+          alertSupplyOrder({ reference, name, phone, email, fulfilment, address: deliveryAddress, note, items }),
+          emailSupplyReceived({ reference, name, email, fulfilment, items }),
+        ]);
         return json(res, 201, { reference });
       } catch (err) {
         if (err?.code !== '23505') throw err; // retry only on duplicate reference

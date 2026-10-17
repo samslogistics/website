@@ -156,7 +156,12 @@
                             <select id="e-status" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
                             <input id="e-location" placeholder="Location (optional)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                             <input id="e-note" placeholder="Note shown to customer (optional)" maxlength="500" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <label class="flex items-start gap-2 text-sm text-gray-700">
+                                <input id="e-notify" type="checkbox" class="mt-0.5 rounded border-gray-300">
+                                <span>Email the customer about this update <span id="e-notify-hint" class="block text-xs text-gray-500"></span></span>
+                            </label>
                             <p id="event-error" class="hidden text-sm text-red-600"></p>
+                            <p id="event-ok" class="hidden text-sm text-green-700"></p>
                             <button type="submit" class="w-full bg-sams-blue text-white font-semibold rounded-lg py-2 hover:bg-sams-light-blue transition">Save update</button>
                         </form>
 

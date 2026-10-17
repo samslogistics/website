@@ -169,6 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
         $('e-status').value = s.status;
         $('e-location').value = '';
         $('e-note').value = '';
+        $('event-ok').classList.add('hidden');
+        const canEmail = Boolean(s.customer_email);
+        $('e-notify').disabled = !canEmail;
+        $('e-notify').checked = canEmail;
+        $('e-notify-hint').textContent = canEmail ? 'Sent to ' + s.customer_email : 'No email address saved for this customer';
 
         $('d-events').replaceChildren(...events.map((ev) => {
             const li = el('li', 'border-l-2 border-sams-gold pl-3');
@@ -186,11 +191,19 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         showError($('event-error'), '');
         try {
-            await api('/api/admin/shipment', {
+            const result = await api('/api/admin/shipment', {
                 method: 'POST',
-                body: { ref: currentRef, status: $('e-status').value, location: $('e-location').value, note: $('e-note').value },
+                body: {
+                    ref: currentRef, status: $('e-status').value, location: $('e-location').value,
+                    note: $('e-note').value, notify: $('e-notify').checked,
+                },
             });
             await openShipment(currentRef);
+            const ok = $('event-ok');
+            if (result.emailed === 'sent') ok.textContent = 'Update saved. The customer has been emailed.';
+            else if (result.emailed === 'failed') ok.textContent = 'Update saved, but the email could not be sent.';
+            else ok.textContent = 'Update saved.';
+            ok.classList.remove('hidden');
         } catch (err) {
             showError($('event-error'), err.message);
         }
@@ -330,7 +343,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     $('r-decline').addEventListener('click', async () => {
-        if (!currentRequest || !confirm(`Decline request ${currentRequest.reference}?`)) return;
+        if (!currentRequest) return;
+        const mailNote = currentRequest.customer_email ? ' The customer will be emailed.' : '';
+        if (!confirm(`Decline request ${currentRequest.reference}?${mailNote}`)) return;
         showError($('r-error'), '');
         try {
             await api('/api/admin/bookings', { method: 'POST', body: { id: currentRequest.id, action: 'decline' } });
