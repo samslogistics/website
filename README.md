@@ -1,13 +1,13 @@
 # Sam's Logistics UK
 
-Static site (HTML + Tailwind CDN) with a small backend on **Vercel serverless functions + Neon Postgres**.
+Static site (HTML + compiled Tailwind CSS) with a small backend on **Vercel serverless functions + Neon Postgres**.
 
 ## Structure
 
 ```
 index.html, *.html          public pages
 admin.html                  admin dashboard (password protected, noindex)
-frontend/styles|scripts     CSS and browser JS (global_style.css, global_script.js, admin.js)
+frontend/styles|scripts     CSS and browser JS (tailwind.css [built], global_style.css, global_script.js, admin.js)
 assets/                     images, icons
 api/                        Vercel function entry points (URL = /api/...)
   track.js                  public: GET /api/track?ref=SL-GH-XXXXXX
@@ -80,6 +80,17 @@ When a booking request or supply order arrives, you get a short alert telling yo
 - Messages show up in **/admin -> Messages** (with a badge for new ones). Reply by email or call from the message, mark it handled, reopen it, or delete it for good (also the way to honour a deletion request).
 - Each message also triggers an owner alert (see above). The form needs a ticked consent box, has a hidden spam-trap field, and allows 5 messages per visitor per hour.
 - Reference format `MS-XXXXXX`.
+
+## Styles (Tailwind)
+The pages use a compiled stylesheet, `frontend/styles/tailwind.css` (about 32 KB), instead of the Tailwind CDN.
+Brand colours and fonts live in `tailwind.config.cjs`. The built file is committed, so Vercel needs no build step.
+
+After you add or change Tailwind classes in any `.html` file or in `frontend/scripts/*.js`, rebuild and commit it:
+
+    npm install        (once)
+    npm run build:css
+
+Write full class names in scripts (`'text-red-600'`), never pieces joined together (`'text-' + colour`), or the builder cannot see them.
 
 ## Next phases
 
