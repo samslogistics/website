@@ -257,7 +257,7 @@ test('admin supply endpoints need a session and validate input', async () => {
     for (const method of ['GET', 'POST', 'DELETE']) {
       const res = mockRes();
       await handler({ method, query: {}, headers: {}, body: {} }, res);
-      assert.equal(res.statusCode, method === 'DELETE' && handler === supplyOrders ? 405 : 401, `${method}`);
+      assert.equal(res.statusCode, 401, `${method}`);
     }
   }
 

@@ -291,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openRequest(r) {
         currentRequest = r;
         showError($('r-error'), '');
+        showError($('r-delete-error'), '');
         $('r-ref').textContent = r.reference;
         $('r-meta').textContent = `${meta.services[r.service] || r.service} to ${r.destination} · ${r.status}`;
         const rows = [
@@ -357,6 +358,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    $('r-delete').addEventListener('click', async () => {
+        if (!currentRequest) return;
+        const keep = currentRequest.shipment_ref ? ` The shipment ${currentRequest.shipment_ref} is kept.` : '';
+        if (!confirm(`Delete request ${currentRequest.reference} for good? This cannot be undone.${keep}`)) return;
+        showError($('r-delete-error'), '');
+        try {
+            await api('/api/admin/bookings?id=' + encodeURIComponent(currentRequest.id), { method: 'DELETE' });
+            currentRequest = null;
+            showRequestPanel('empty');
+            await loadRequests();
+            refreshBadge();
+        } catch (err) {
+            showError($('r-delete-error'), err.message);
+        }
+    });
+
     // ---- supply orders ----
     let currentOrder = null;
 
@@ -407,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openOrder(o) {
         currentOrder = o;
         showError($('o-error'), '');
+        showError($('o-delete-error'), '');
         $('o-ref').textContent = o.reference;
         $('o-meta').textContent = `${o.fulfilment === 'delivery' ? 'Delivery' : 'Collection'} \u00B7 ${o.status}`;
         const rows = [
@@ -460,6 +478,21 @@ document.addEventListener('DOMContentLoaded', () => {
     $('o-confirm').addEventListener('click', () => orderAction('confirm'));
     $('o-complete').addEventListener('click', () => orderAction('complete'));
     $('o-cancel').addEventListener('click', () => orderAction('cancel', currentOrder ? `Cancel order ${currentOrder.reference}?` : ''));
+
+    $('o-delete').addEventListener('click', async () => {
+        if (!currentOrder) return;
+        if (!confirm(`Delete order ${currentOrder.reference} for good? This cannot be undone.`)) return;
+        showError($('o-delete-error'), '');
+        try {
+            await api('/api/admin/supply-orders?id=' + encodeURIComponent(currentOrder.id), { method: 'DELETE' });
+            currentOrder = null;
+            showOrderPanel('empty');
+            await loadOrders();
+            refreshBadge();
+        } catch (err) {
+            showError($('o-delete-error'), err.message);
+        }
+    });
 
     // ---- contact messages ----
     let currentMessage = null;

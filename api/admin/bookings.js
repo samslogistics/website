@@ -2,6 +2,7 @@
 // POST /api/admin/bookings  { id, action: 'accept' | 'decline', location? }
 //   accept  -> creates a shipment (tracking number) from the request, atomically
 //   decline -> marks the request declined
+// DELETE /api/admin/bookings?id=123 -> remove a request (an accepted request's shipment is kept)
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
 import { DESTINATIONS } from '../../backend/lib/constants.js';
@@ -29,7 +30,7 @@ async function tellCustomer(sql, id, send, extra = {}) {
 const FILTERS = ['new', 'accepted', 'declined', 'all'];
 
 export default async function handler(req, res) {
-  if (!methodGuard(req, res, ['GET', 'POST'])) return;
+  if (!methodGuard(req, res, ['GET', 'POST', 'DELETE'])) return;
   if (!requireAdmin(req, res)) return;
 
   try {
@@ -49,6 +50,14 @@ export default async function handler(req, res) {
             FROM booking_requests WHERE status = ${status} ORDER BY created_at DESC LIMIT 100`;
       const counts = await sql`SELECT count(*)::int AS n FROM booking_requests WHERE status = 'new'`;
       return json(res, 200, { requests: rows, newCount: counts[0].n });
+    }
+
+    if (req.method === 'DELETE') {
+      const did = Number(req.query?.id);
+      if (!Number.isSafeInteger(did) || did < 1) return json(res, 400, { error: 'Invalid request id.' });
+      const gone = await db()`DELETE FROM booking_requests WHERE id = ${did} RETURNING id`;
+      if (!gone.length) return json(res, 404, { error: 'Request not found.' });
+      return json(res, 200, { ok: true });
     }
 
     const b = bodyOf(req);
