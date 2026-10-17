@@ -36,6 +36,22 @@ body {
     to   { opacity: 1; translate: 0 0; }
 }
 
+/* Phones and tablets: show the whole photo as a clear banner at the top of the hero
+   (full colour, not cropped), fading smoothly into the blue where the text starts. */
+@media (max-width: 1023px) {
+    .hero-section { padding-top: calc(100vw * 768 / 1376 - 1.25rem) !important; }
+    .hero-background {
+        bottom: auto !important;
+        height: auto !important;
+        aspect-ratio: 1376 / 768;
+        opacity: 1 !important;
+        mix-blend-mode: normal;
+        animation: none;
+        -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+    }
+}
+
 /* Visitors who ask their device for less motion get a still hero */
 @media (prefers-reduced-motion: reduce) {
     .hero-background, .hero-copy > * { animation: none; }
