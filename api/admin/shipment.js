@@ -1,10 +1,12 @@
 // GET    /api/admin/shipment?ref=...  -> full details incl. customer info + events
-// POST   /api/admin/shipment          -> add a status update { ref, status, location?, note? }
+// POST   /api/admin/shipment          -> add a status update { ref, status, location?, note?, notify? }
+//                                        notify: true also emails the customer (if they have an email)
 // DELETE /api/admin/shipment?ref=...  -> delete a shipment (and its events)
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
 import { STATUSES } from '../../backend/lib/constants.js';
 import { json, methodGuard, bodyOf, clean, normalizeRef } from '../../backend/lib/http.js';
+import { emailStatusUpdate } from '../../backend/lib/customerMail.js';
 
 export default async function handler(req, res) {
   if (!methodGuard(req, res, ['GET', 'POST', 'DELETE'])) return;
@@ -29,7 +31,21 @@ export default async function handler(req, res) {
         INSERT INTO shipment_events (shipment_id, status, location, note)
         SELECT id, ${status}, ${location}, ${note} FROM s RETURNING id`;
       if (!rows.length) return json(res, 404, { error: 'Shipment not found.' });
-      return json(res, 200, { ok: true });
+
+      // Optional customer email. A problem here never undoes the saved update.
+      let emailed = 'not requested';
+      if (b.notify === true) {
+        try {
+          const c = await sql`SELECT customer_name, customer_email FROM shipments WHERE tracking_ref = ${ref}`;
+          emailed = c.length
+            ? await emailStatusUpdate({ trackingRef: ref, status, location, note, name: c[0].customer_name, email: c[0].customer_email })
+            : 'skipped';
+        } catch (err) {
+          console.error('status customer email failed', err?.message);
+          emailed = 'failed';
+        }
+      }
+      return json(res, 200, { ok: true, emailed });
     }
 
     const ref = normalizeRef(req.query?.ref);

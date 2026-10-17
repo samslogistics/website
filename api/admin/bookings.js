@@ -2,15 +2,35 @@
 // POST /api/admin/bookings  { id, action: 'accept' | 'decline', location? }
 //   accept  -> creates a shipment (tracking number) from the request, atomically
 //   decline -> marks the request declined
+// DELETE /api/admin/bookings?id=123 -> remove a request (an accepted request's shipment is kept)
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
 import { DESTINATIONS } from '../../backend/lib/constants.js';
 import { json, methodGuard, bodyOf, clean, generateRef } from '../../backend/lib/http.js';
+import { emailBookingAccepted, emailBookingDeclined } from '../../backend/lib/customerMail.js';
+
+// Customer email after the owner's decision. Never throws; reports 'sent' | 'skipped' | 'failed'.
+async function tellCustomer(sql, id, send, extra = {}) {
+  try {
+    const r = await sql`
+      SELECT reference, service, destination, customer_name, customer_email
+      FROM booking_requests WHERE id = ${id}`;
+    if (!r.length) return 'skipped';
+    const x = r[0];
+    return await send({
+      reference: x.reference, service: x.service, destination: x.destination,
+      name: x.customer_name, email: x.customer_email, ...extra,
+    });
+  } catch (err) {
+    console.error('booking customer email failed', err?.message);
+    return 'failed';
+  }
+}
 
 const FILTERS = ['new', 'accepted', 'declined', 'all'];
 
 export default async function handler(req, res) {
-  if (!methodGuard(req, res, ['GET', 'POST'])) return;
+  if (!methodGuard(req, res, ['GET', 'POST', 'DELETE'])) return;
   if (!requireAdmin(req, res)) return;
 
   try {
@@ -32,6 +52,14 @@ export default async function handler(req, res) {
       return json(res, 200, { requests: rows, newCount: counts[0].n });
     }
 
+    if (req.method === 'DELETE') {
+      const did = Number(req.query?.id);
+      if (!Number.isSafeInteger(did) || did < 1) return json(res, 400, { error: 'Invalid request id.' });
+      const gone = await db()`DELETE FROM booking_requests WHERE id = ${did} RETURNING id`;
+      if (!gone.length) return json(res, 404, { error: 'Request not found.' });
+      return json(res, 200, { ok: true });
+    }
+
     const b = bodyOf(req);
     const id = Number(b.id);
     if (!Number.isSafeInteger(id) || id < 1) return json(res, 400, { error: 'Invalid request id.' });
@@ -44,7 +72,8 @@ export default async function handler(req, res) {
         UPDATE booking_requests SET status = 'declined', handled_at = now()
         WHERE id = ${id} AND status = 'new' RETURNING id`;
       if (!rows.length) return json(res, 409, { error: 'This request was already handled or no longer exists.' });
-      return json(res, 200, { ok: true });
+      const emailed = await tellCustomer(sql, id, emailBookingDeclined);
+      return json(res, 200, { ok: true, emailed });
     }
 
     const location = clean(b.location, 120) || 'UK';
@@ -77,7 +106,8 @@ export default async function handler(req, res) {
           SELECT id, 'Order received', ${location}, 'Your booking has been accepted and is being processed.' FROM s
           RETURNING shipment_id`;
         if (!rows.length) return json(res, 409, { error: 'This request was already handled or no longer exists.' });
-        return json(res, 200, { ok: true, shipmentRef: ref });
+        const emailed = await tellCustomer(sql, id, emailBookingAccepted, { trackingRef: ref });
+        return json(res, 200, { ok: true, shipmentRef: ref, emailed });
       } catch (err) {
         if (err?.code !== '23505') throw err; // retry only on duplicate tracking number
       }

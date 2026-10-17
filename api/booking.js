@@ -8,6 +8,7 @@ import {
   EMAIL_RE, PHONE_RE, validBookingDate,
 } from '../backend/lib/http.js';
 import { alertBooking } from '../backend/lib/notify.js';
+import { emailBookingReceived } from '../backend/lib/customerMail.js';
 
 const MAX_PER_HOUR = 5; // per visitor (salted IP hash)
 
@@ -64,7 +65,11 @@ export default async function handler(req, res) {
             (${reference}, ${service}, ${destination}, ${name}, ${email}, ${phone},
              ${pickup}, ${delivery}, ${preferredDate}, ${description}, ${ipHash})`;
         // Tell the owner (email / WhatsApp). Never throws, never blocks the customer's request.
-        await alertBooking({ reference, service, destination, name, phone, email, pickup, delivery, preferredDate, description });
+        // Also confirm to the customer if they gave an email address (same rules: never throws).
+        await Promise.all([
+          alertBooking({ reference, service, destination, name, phone, email, pickup, delivery, preferredDate, description }),
+          emailBookingReceived({ reference, service, destination, name, email }),
+        ]);
         return json(res, 201, { reference });
       } catch (err) {
         if (err?.code !== '23505') throw err; // retry only on duplicate reference

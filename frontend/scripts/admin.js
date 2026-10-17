@@ -169,6 +169,11 @@ document.addEventListener('DOMContentLoaded', () => {
         $('e-status').value = s.status;
         $('e-location').value = '';
         $('e-note').value = '';
+        $('event-ok').classList.add('hidden');
+        const canEmail = Boolean(s.customer_email);
+        $('e-notify').disabled = !canEmail;
+        $('e-notify').checked = canEmail;
+        $('e-notify-hint').textContent = canEmail ? 'Sent to ' + s.customer_email : 'No email address saved for this customer';
 
         $('d-events').replaceChildren(...events.map((ev) => {
             const li = el('li', 'border-l-2 border-sams-gold pl-3');
@@ -186,11 +191,19 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault();
         showError($('event-error'), '');
         try {
-            await api('/api/admin/shipment', {
+            const result = await api('/api/admin/shipment', {
                 method: 'POST',
-                body: { ref: currentRef, status: $('e-status').value, location: $('e-location').value, note: $('e-note').value },
+                body: {
+                    ref: currentRef, status: $('e-status').value, location: $('e-location').value,
+                    note: $('e-note').value, notify: $('e-notify').checked,
+                },
             });
             await openShipment(currentRef);
+            const ok = $('event-ok');
+            if (result.emailed === 'sent') ok.textContent = 'Update saved. The customer has been emailed.';
+            else if (result.emailed === 'failed') ok.textContent = 'Update saved, but the email could not be sent.';
+            else ok.textContent = 'Update saved.';
+            ok.classList.remove('hidden');
         } catch (err) {
             showError($('event-error'), err.message);
         }
@@ -278,6 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openRequest(r) {
         currentRequest = r;
         showError($('r-error'), '');
+        showError($('r-delete-error'), '');
         $('r-ref').textContent = r.reference;
         $('r-meta').textContent = `${meta.services[r.service] || r.service} to ${r.destination} · ${r.status}`;
         const rows = [
@@ -330,7 +344,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     $('r-decline').addEventListener('click', async () => {
-        if (!currentRequest || !confirm(`Decline request ${currentRequest.reference}?`)) return;
+        if (!currentRequest) return;
+        const mailNote = currentRequest.customer_email ? ' The customer will be emailed.' : '';
+        if (!confirm(`Decline request ${currentRequest.reference}?${mailNote}`)) return;
         showError($('r-error'), '');
         try {
             await api('/api/admin/bookings', { method: 'POST', body: { id: currentRequest.id, action: 'decline' } });
@@ -339,6 +355,22 @@ document.addEventListener('DOMContentLoaded', () => {
             await loadRequests();
         } catch (err) {
             showError($('r-error'), err.message);
+        }
+    });
+
+    $('r-delete').addEventListener('click', async () => {
+        if (!currentRequest) return;
+        const keep = currentRequest.shipment_ref ? ` The shipment ${currentRequest.shipment_ref} is kept.` : '';
+        if (!confirm(`Delete request ${currentRequest.reference} for good? This cannot be undone.${keep}`)) return;
+        showError($('r-delete-error'), '');
+        try {
+            await api('/api/admin/bookings?id=' + encodeURIComponent(currentRequest.id), { method: 'DELETE' });
+            currentRequest = null;
+            showRequestPanel('empty');
+            await loadRequests();
+            refreshBadge();
+        } catch (err) {
+            showError($('r-delete-error'), err.message);
         }
     });
 
@@ -392,6 +424,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function openOrder(o) {
         currentOrder = o;
         showError($('o-error'), '');
+        showError($('o-delete-error'), '');
         $('o-ref').textContent = o.reference;
         $('o-meta').textContent = `${o.fulfilment === 'delivery' ? 'Delivery' : 'Collection'} \u00B7 ${o.status}`;
         const rows = [
@@ -445,6 +478,21 @@ document.addEventListener('DOMContentLoaded', () => {
     $('o-confirm').addEventListener('click', () => orderAction('confirm'));
     $('o-complete').addEventListener('click', () => orderAction('complete'));
     $('o-cancel').addEventListener('click', () => orderAction('cancel', currentOrder ? `Cancel order ${currentOrder.reference}?` : ''));
+
+    $('o-delete').addEventListener('click', async () => {
+        if (!currentOrder) return;
+        if (!confirm(`Delete order ${currentOrder.reference} for good? This cannot be undone.`)) return;
+        showError($('o-delete-error'), '');
+        try {
+            await api('/api/admin/supply-orders?id=' + encodeURIComponent(currentOrder.id), { method: 'DELETE' });
+            currentOrder = null;
+            showOrderPanel('empty');
+            await loadOrders();
+            refreshBadge();
+        } catch (err) {
+            showError($('o-delete-error'), err.message);
+        }
+    });
 
     // ---- contact messages ----
     let currentMessage = null;

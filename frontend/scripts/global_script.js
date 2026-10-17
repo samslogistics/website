@@ -232,6 +232,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
+    // Links in our emails open the site with ?track=SL-XX-XXXXXX: fill the box and look it up.
+    if (trackingForm && trackingInput) {
+        const wanted = new URLSearchParams(window.location.search).get('track');
+        if (wanted && /^[A-Za-z0-9-]{5,30}$/.test(wanted.trim())) {
+            trackingInput.value = wanted.trim().toUpperCase();
+            if (typeof trackingForm.requestSubmit === 'function') trackingForm.requestSubmit();
+            else trackingForm.dispatchEvent(new Event('submit', { cancelable: true }));
+        }
+    }
+
     // --- Booking Request Form (POST /api/booking) ---
     const bookingForm = document.getElementById('booking-form');
     const bookingStatus = document.getElementById('booking-status');
