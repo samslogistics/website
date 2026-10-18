@@ -23,7 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         window.addEventListener('scroll', updateScrollToTop, { passive: true });
-        updateScrollToTop();
+        // First check waits for the next frame so it does not force the browser to lay the page out twice
+        requestAnimationFrame(updateScrollToTop);
 
         scrollToTop.addEventListener('click', () => {
             window.scrollTo({ top: 0, behavior: 'smooth' });

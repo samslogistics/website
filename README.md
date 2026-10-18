@@ -117,3 +117,10 @@ The header and footer of `disclaimer.html`, `imprint.html`, `legal_notice.html` 
 
 - `Admin_manual.md`: a manual for whoever works as an admin
 - Alerts on status changes for customers
+
+## Page speed notes
+
+- Save every picture at about twice the size it is shown on the page (the logo is 294 x 192, the supply photos 512 wide) and always give `<img>` tags `width` and `height`. A full-size image shown small is the biggest cause of a slow mobile score.
+- Pictures below the first screen use `loading="lazy"`. The hero photo is preloaded in the `<head>` of `index.html` and phones get the smaller `hero-bg-mobile.webp`.
+- Google Fonts and Font Awesome load without blocking the first paint (`rel="preload"` plus a `<noscript>` fallback).
+- Headings step down one level at a time (h2, then h3) so screen readers can follow the page.

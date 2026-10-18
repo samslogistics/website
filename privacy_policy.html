@@ -13,10 +13,12 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600;700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600;700&display=swap"></noscript>
     
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel='stylesheet';document.documentElement.classList.add('fa-ready')">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
     
     <!-- Tailwind CSS -->
     <link rel="stylesheet" href="frontend/styles/tailwind.css">
@@ -61,7 +63,7 @@
         <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex flex-row justify-between items-center h-20 md:h-24">
                 <a href="index.html" class="flex-shrink-0 flex items-center gap-3 p-2 sm:p-3">
-                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
+                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="192" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
                 </a>
 
                 <div class="hidden md:flex flex-row items-center space-x-8">
@@ -250,14 +252,14 @@
             <div class="flex flex-col md:flex-row flex-wrap lg:flex-nowrap justify-between gap-10 mb-12">
                 
                 <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4 flex flex-col items-start">
-                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-24 w-auto object-contain mb-3">
+                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="192" loading="lazy" decoding="async" class="h-24 w-auto object-contain mb-3">
                     <p class="text-blue-100 text-xs sm:text-sm leading-relaxed mb-6">
                         Providing fast, reliable, and affordable door-to-door shipping from the UK to Ghana and Jamaica.
                     </p>
                 </div>
 
                 <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h3>
                     <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
                         <li><a href="index.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Home</a></li>
                         <li><a href="index.html#services" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Services</a></li>
@@ -267,7 +269,7 @@
                 </div>
 
                 <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h3>
                     <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
                         <li><a href="privacy_policy.html" class="text-sams-gold font-bold inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Privacy Policy</a></li>
                         <li><a href="disclaimer.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Disclaimer</a></li>
@@ -277,7 +279,7 @@
                 </div>
 
                 <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h3>
                     <ul class="flex flex-col space-y-3 text-blue-100 text-xs sm:text-sm">
                         <li class="flex items-start gap-3">
                             <i class="fa-solid fa-map-location-dot mt-1 text-sams-gold"></i>

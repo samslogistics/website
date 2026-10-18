@@ -39,6 +39,7 @@ body {
 /* Phones and tablets: show the whole photo as a banner at the top of the hero (not cropped),
    tinted blue like on desktop and fading smoothly into the blue where the text starts. */
 @media (max-width: 1023px) {
+    .hero-background { background-image: url('../../assets/images/hero-bg-mobile.webp'); }
     .hero-section { padding-top: calc(100vw * 768 / 1376 - 1.25rem) !important; }
     .hero-background {
         bottom: auto !important;
@@ -115,3 +116,8 @@ body {
         padding-bottom: 4rem;
     }
 }
+/* Eyebrow labels above section titles: a slightly deeper blue so the small text is easy to read on the light grey background */
+.text-eyebrow-blue { color: #0063B8; }
+
+/* Icons hold their space until the Font Awesome stylesheet has loaded, so the page does not jump when it arrives */
+html:not(.fa-ready) i[class*="fa-"] { display: inline-block; min-width: 1em; min-height: 1em; }
