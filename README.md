@@ -105,6 +105,10 @@ After you add or change Tailwind classes in any `.html` file or in `frontend/scr
 
 Write full class names in scripts (`'text-red-600'`), never pieces joined together (`'text-' + colour`), or the builder cannot see them.
 
+## Legal pages (shared header and footer)
+
+The header and footer of `disclaimer.html`, `imprint.html`, `legal_notice.html` and `privacy_policy.html` live in `frontend/partials/header.html` and `footer.html`. To change a menu item, a footer link, or the contact details in the footer, edit the partial, run `npm run build:pages`, and commit the four pages. The pages stay plain static HTML. The tests fail if a page is out of date. The small menu script is `frontend/scripts/legal.js`.
+
 ## Next phases
 
 - `Admin_manual.md`: a manual for whoever works as an admin

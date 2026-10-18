@@ -35,6 +35,7 @@
 
 <body class="bg-gray-50 text-gray-800 font-sans flex flex-col min-h-screen selection:bg-sams-gold selection:text-sams-blue">
 
+    <!-- @include header -->
     <header class="bg-white shadow-md sticky top-0 z-40">
         <!-- Top Contact Bar -->
         <div class="bg-sams-gold text-sams-blue">
@@ -104,9 +105,12 @@
             </div>
         </div>
     </header>
+    <!-- @end include -->
 
     <main class="flex-grow flex flex-col w-full">
         <section class="bg-sams-blue text-white py-12 sm:py-16 relative overflow-hidden">
+            <img src="assets/images/legal-imprint.webp" alt="" width="260" height="260" aria-hidden="true" decoding="async"
+                 class="absolute top-1/2 -translate-y-1/2 left-1/2 -translate-x-1/2 sm:left-auto sm:translate-x-0 sm:right-0 h-[130%] sm:h-[135%] w-auto max-w-none opacity-30 mix-blend-luminosity pointer-events-none select-none">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center sm:text-left">
                 <div class="flex items-center justify-center sm:justify-start gap-2 text-sams-gold text-xs sm:text-sm font-bold uppercase tracking-wider mb-2">
                     <a href="index.html" class="hover:underline">Home</a>
@@ -203,6 +207,7 @@
         </section>
     </main>
 
+    <!-- @include footer -->
     <div class="md:hidden fixed bottom-0 left-0 right-0 bg-sams-blue text-white z-50 shadow-[0_-4px_20px_rgba(0,0,0,0.2)] border-t-2 border-sams-gold flex flex-row items-center justify-around p-2">
         <a href="tel:07432294414" class="flex flex-col items-center justify-center py-1 px-3 text-sams-gold active:scale-95 transition-transform min-h-[48px] w-1/2 border-r border-white/10">
             <i class="fa-solid fa-phone text-lg mb-0.5"></i>
@@ -270,27 +275,8 @@
             </div>
         </div>
     </footer>
+    <!-- @end include -->
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            const btn = document.getElementById('mobile-menu-btn');
-            const menu = document.getElementById('mobile-menu');
-
-            if(btn && menu) {
-                btn.addEventListener('click', () => {
-                    menu.classList.toggle('hidden');
-                    const icon = btn.querySelector('i');
-                    if (menu.classList.contains('hidden')) {
-                        icon.classList.remove('fa-xmark');
-                        icon.classList.add('fa-bars');
-                    } else {
-                        icon.classList.remove('fa-bars');
-                        icon.classList.add('fa-xmark');
-                    }
-                });
-            }
-        });
-    </script>
+    <script src="frontend/scripts/legal.js" defer></script>
 </body>
 </html>
