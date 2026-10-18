@@ -119,5 +119,3 @@ body {
 /* Eyebrow labels above section titles: a slightly deeper blue so the small text is easy to read on the light grey background */
 .text-eyebrow-blue { color: #0063B8; }
 
-/* Icons hold their space until the Font Awesome stylesheet has loaded, so the page does not jump when it arrives */
-html:not(.fa-ready) i[class*="fa-"] { display: inline-block; min-width: 1em; min-height: 1em; }
