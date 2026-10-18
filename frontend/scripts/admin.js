@@ -94,31 +94,68 @@ document.addEventListener('DOMContentLoaded', () => {
         showLogin();
     });
 
-    // ---- list ----
-    async function loadList() {
-        const q = $('search-input').value.trim();
-        const { shipments } = await api('/api/admin/shipments' + (q ? '?q=' + encodeURIComponent(q) : ''));
-        const body = $('shipment-rows');
-        body.replaceChildren(...shipments.map((s) => {
-            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (s.tracking_ref === currentRef ? ' bg-yellow-50' : ''));
-            tr.append(
-                el('td', 'px-4 py-3 font-semibold text-sams-blue', s.tracking_ref),
-                el('td', 'px-4 py-3', s.customer_name),
-                el('td', 'px-4 py-3', meta.services[s.service] || s.service),
-                el('td', 'px-4 py-3', s.destination),
-                el('td', 'px-4 py-3', s.status),
-            );
-            tr.addEventListener('click', () => openShipment(s.tracking_ref));
-            return tr;
-        }));
-        $('list-empty').classList.toggle('hidden', shipments.length > 0);
+    // ---- paged lists (search + "Load more", 25 at a time) ----
+    function query(params) {
+        const p = new URLSearchParams();
+        for (const [k, v] of Object.entries(params)) if (v !== '' && v !== null && v !== undefined && v !== 0) p.set(k, v);
+        const text = p.toString();
+        return text ? '?' + text : '';
     }
 
-    let searchTimer;
-    $('search-input').addEventListener('input', () => {
-        clearTimeout(searchTimer);
-        searchTimer = setTimeout(() => loadList().catch(() => {}), 300);
+    // cfg: url(offset) -> API address, key -> name of the array in the reply, rows/empty/more/count/button -> element ids,
+    //      render(item) -> <tr>, onData(reply) -> optional (badges)
+    function pagedList(cfg) {
+        let items = [];
+        let seq = 0;
+        async function load(append = false) {
+            const mine = ++seq; // a newer search/filter makes older replies irrelevant
+            const reply = await api(cfg.url(append ? items.length : 0));
+            if (mine !== seq) return;
+            items = append ? items.concat(reply[cfg.key]) : reply[cfg.key];
+            const total = typeof reply.total === 'number' ? reply.total : items.length;
+            $(cfg.rows).replaceChildren(...items.map(cfg.render));
+            $(cfg.empty).classList.toggle('hidden', items.length > 0);
+            $(cfg.more).classList.toggle('hidden', items.length === 0);
+            $(cfg.count).textContent = `Showing ${items.length} of ${total}`;
+            $(cfg.button).classList.toggle('hidden', items.length >= total);
+            if (cfg.onData) cfg.onData(reply);
+        }
+        $(cfg.button).addEventListener('click', async () => {
+            const btn = $(cfg.button);
+            btn.disabled = true;
+            try { await load(true); } catch { /* the list stays as it was */ } finally { btn.disabled = false; }
+        });
+        return { load };
+    }
+
+    function onSearch(inputId, reload) {
+        let timer;
+        $(inputId).addEventListener('input', () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => reload().catch(() => {}), 300);
+        });
+    }
+
+    // ---- list ----
+    const shipmentList = pagedList({
+        url: (offset) => '/api/admin/shipments' + query({ q: $('search-input').value.trim(), offset }),
+        key: 'shipments', rows: 'shipment-rows', empty: 'list-empty',
+        more: 'list-more', count: 'list-count', button: 'list-more-btn',
+        render: (sh) => {
+            const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (sh.tracking_ref === currentRef ? ' bg-yellow-50' : ''));
+            tr.append(
+                el('td', 'px-4 py-3 font-semibold text-sams-blue', sh.tracking_ref),
+                el('td', 'px-4 py-3', sh.customer_name),
+                el('td', 'px-4 py-3', meta.services[sh.service] || sh.service),
+                el('td', 'px-4 py-3', sh.destination),
+                el('td', 'px-4 py-3', sh.status),
+            );
+            tr.addEventListener('click', () => openShipment(sh.tracking_ref));
+            return tr;
+        },
     });
+    const loadList = () => shipmentList.load(false);
+    onSearch('search-input', loadList);
 
     // ---- new shipment ----
     $('new-btn').addEventListener('click', () => {
@@ -268,11 +305,12 @@ document.addEventListener('DOMContentLoaded', () => {
         $('request-detail').classList.toggle('hidden', which !== 'detail');
     }
 
-    async function loadRequests() {
-        const status = $('request-filter').value;
-        const { requests, newCount } = await api('/api/admin/bookings?status=' + encodeURIComponent(status));
-        setBadge(newCount);
-        $('request-rows').replaceChildren(...requests.map((r) => {
+    const requestList = pagedList({
+        url: (offset) => '/api/admin/bookings' + query({ status: $('request-filter').value, q: $('request-search').value.trim(), offset }),
+        key: 'requests', rows: 'request-rows', empty: 'request-empty',
+        more: 'request-more', count: 'request-count', button: 'request-more-btn',
+        onData: (reply) => setBadge(reply.newCount),
+        render: (r) => {
             const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentRequest && r.id === currentRequest.id ? ' bg-yellow-50' : ''));
             tr.append(
                 el('td', 'px-4 py-3 font-semibold text-sams-blue', r.reference),
@@ -284,9 +322,10 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             tr.addEventListener('click', () => openRequest(r));
             return tr;
-        }));
-        $('request-empty').classList.toggle('hidden', requests.length > 0);
-    }
+        },
+    });
+    const loadRequests = () => requestList.load(false);
+    onSearch('request-search', loadRequests);
 
     function openRequest(r) {
         currentRequest = r;
@@ -400,11 +439,12 @@ document.addEventListener('DOMContentLoaded', () => {
         $('order-detail').classList.toggle('hidden', which !== 'detail');
     }
 
-    async function loadOrders() {
-        const status = $('order-filter').value;
-        const { orders, newCount } = await api('/api/admin/supply-orders?status=' + encodeURIComponent(status));
-        setOrdersBadge(newCount);
-        $('order-rows').replaceChildren(...orders.map((o) => {
+    const orderList = pagedList({
+        url: (offset) => '/api/admin/supply-orders' + query({ status: $('order-filter').value, q: $('order-search').value.trim(), offset }),
+        key: 'orders', rows: 'order-rows', empty: 'order-empty',
+        more: 'order-more', count: 'order-count', button: 'order-more-btn',
+        onData: (reply) => setOrdersBadge(reply.newCount),
+        render: (o) => {
             const total = orderTotal(o.lines);
             const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentOrder && o.id === currentOrder.id ? ' bg-yellow-50' : ''));
             tr.append(
@@ -417,9 +457,10 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             tr.addEventListener('click', () => openOrder(o));
             return tr;
-        }));
-        $('order-empty').classList.toggle('hidden', orders.length > 0);
-    }
+        },
+    });
+    const loadOrders = () => orderList.load(false);
+    onSearch('order-search', loadOrders);
 
     function openOrder(o) {
         currentOrder = o;
@@ -515,11 +556,12 @@ document.addEventListener('DOMContentLoaded', () => {
         $('message-detail').classList.toggle('hidden', which !== 'detail');
     }
 
-    async function loadMessages() {
-        const status = $('message-filter').value;
-        const { messages, newCount } = await api('/api/admin/messages?status=' + encodeURIComponent(status));
-        setMessagesBadge(newCount);
-        $('message-rows').replaceChildren(...messages.map((m) => {
+    const messageList = pagedList({
+        url: (offset) => '/api/admin/messages' + query({ status: $('message-filter').value, q: $('message-search').value.trim(), offset }),
+        key: 'messages', rows: 'message-rows', empty: 'message-empty',
+        more: 'message-more', count: 'message-count', button: 'message-more-btn',
+        onData: (reply) => setMessagesBadge(reply.newCount),
+        render: (m) => {
             const tr = el('tr', 'border-t hover:bg-gray-50 cursor-pointer' + (currentMessage && m.id === currentMessage.id ? ' bg-yellow-50' : ''));
             tr.append(
                 el('td', 'px-4 py-3 font-semibold text-sams-blue', m.reference),
@@ -530,9 +572,10 @@ document.addEventListener('DOMContentLoaded', () => {
             );
             tr.addEventListener('click', () => openMessage(m));
             return tr;
-        }));
-        $('message-empty').classList.toggle('hidden', messages.length > 0);
-    }
+        },
+    });
+    const loadMessages = () => messageList.load(false);
+    onSearch('message-search', loadMessages);
 
     function openMessage(m) {
         currentMessage = m;

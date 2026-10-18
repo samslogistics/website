@@ -1,10 +1,10 @@
 // Admin contact-form messages.
-// GET  /api/admin/messages?status=new|handled|all -> list (max 100) + count of new
+// GET  /api/admin/messages?status=new|handled|all&q=text&offset=0 -> 25 per page + total + count of new
 // POST /api/admin/messages  { id, action: 'handle' | 'reopen' | 'delete' }
 //   handle: new -> handled   reopen: handled -> new   delete: removes the message for good
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
-import { json, methodGuard, bodyOf } from '../../backend/lib/http.js';
+import { json, methodGuard, bodyOf, listParams } from '../../backend/lib/http.js';
 
 const FILTERS = ['new', 'handled', 'all'];
 const ACTIONS = ['handle', 'reopen', 'delete'];
@@ -17,14 +17,22 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const sql = db();
       const status = FILTERS.includes(req.query?.status) ? req.query.status : 'new';
+      const { like, offset, limit } = listParams(req);
       const rows = await sql`
         SELECT id, reference, customer_name, customer_email, customer_phone, service, message,
                status, created_at, handled_at
         FROM contact_messages
         WHERE (${status} = 'all' OR status = ${status})
-        ORDER BY created_at DESC LIMIT 100`;
+          AND (${like}::text IS NULL OR reference ILIKE ${like} OR customer_name ILIKE ${like}
+               OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like} OR message ILIKE ${like})
+        ORDER BY created_at DESC, id DESC LIMIT ${limit} OFFSET ${offset}`;
+      const t = await sql`
+        SELECT count(*)::int AS n FROM contact_messages
+        WHERE (${status} = 'all' OR status = ${status})
+          AND (${like}::text IS NULL OR reference ILIKE ${like} OR customer_name ILIKE ${like}
+               OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like} OR message ILIKE ${like})`;
       const counts = await sql`SELECT count(*)::int AS n FROM contact_messages WHERE status = 'new'`;
-      return json(res, 200, { messages: rows, newCount: counts[0].n });
+      return json(res, 200, { messages: rows, total: t[0].n, newCount: counts[0].n });
     }
 
     const b = bodyOf(req);

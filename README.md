@@ -73,6 +73,10 @@ When a booking request or supply order arrives, you get a short alert telling yo
 - Redeploy after adding or changing a variable; variables only apply to new deployments.
 - CallMeBot is a free service for personal use. If it ever stops working, only `sendWhatsApp()` in `backend/lib/notify.js` needs replacing.
 
+## Admin lists: search and paging
+
+Shipments, Requests, Orders and Messages show 25 rows at a time, newest first, with "Showing X of Y" and a **Load more** button under the table. The search box above each list matches references, names, emails and phone numbers (messages also match the message text). Search and the status filter work together, and any change starts again from the first page.
+
 ## Customer emails
 
 When a customer gives an email address, they get plain-text service emails (not marketing) from `alerts@samslogistics.co.uk` via Resend. Replies go to the contact inbox.
