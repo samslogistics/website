@@ -1,4 +1,4 @@
-// GET  /api/admin/bookings?status=new|accepted|declined|all  -> list (max 100) + count of new
+// GET  /api/admin/bookings?status=new|accepted|declined|all&q=text&offset=0  -> 25 per page + total + count of new
 // POST /api/admin/bookings  { id, action: 'accept' | 'decline', location? }
 //   accept  -> creates a shipment (tracking number) from the request, atomically
 //   decline -> marks the request declined
@@ -6,7 +6,7 @@
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
 import { DESTINATIONS } from '../../backend/lib/constants.js';
-import { json, methodGuard, bodyOf, clean, generateRef } from '../../backend/lib/http.js';
+import { json, methodGuard, bodyOf, clean, generateRef, listParams } from '../../backend/lib/http.js';
 import { emailBookingAccepted, emailBookingDeclined } from '../../backend/lib/customerMail.js';
 
 // Customer email after the owner's decision. Never throws; reports 'sent' | 'skipped' | 'failed'.
@@ -37,19 +37,23 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const status = FILTERS.includes(req.query?.status) ? req.query.status : 'new';
       const sql = db();
-      const rows = status === 'all'
-        ? await sql`
-            SELECT id, reference, service, destination, customer_name, customer_email, customer_phone,
-                   pickup_address, delivery_address, preferred_date, description, status, shipment_ref,
-                   created_at, handled_at
-            FROM booking_requests ORDER BY created_at DESC LIMIT 100`
-        : await sql`
-            SELECT id, reference, service, destination, customer_name, customer_email, customer_phone,
-                   pickup_address, delivery_address, preferred_date, description, status, shipment_ref,
-                   created_at, handled_at
-            FROM booking_requests WHERE status = ${status} ORDER BY created_at DESC LIMIT 100`;
+      const { like, offset, limit } = listParams(req);
+      const rows = await sql`
+        SELECT id, reference, service, destination, customer_name, customer_email, customer_phone,
+               pickup_address, delivery_address, preferred_date, description, status, shipment_ref,
+               created_at, handled_at
+        FROM booking_requests
+        WHERE (${status} = 'all' OR status = ${status})
+          AND (${like}::text IS NULL OR reference ILIKE ${like} OR customer_name ILIKE ${like}
+               OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like} OR shipment_ref ILIKE ${like})
+        ORDER BY created_at DESC, id DESC LIMIT ${limit} OFFSET ${offset}`;
+      const t = await sql`
+        SELECT count(*)::int AS n FROM booking_requests
+        WHERE (${status} = 'all' OR status = ${status})
+          AND (${like}::text IS NULL OR reference ILIKE ${like} OR customer_name ILIKE ${like}
+               OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like} OR shipment_ref ILIKE ${like})`;
       const counts = await sql`SELECT count(*)::int AS n FROM booking_requests WHERE status = 'new'`;
-      return json(res, 200, { requests: rows, newCount: counts[0].n });
+      return json(res, 200, { requests: rows, total: t[0].n, newCount: counts[0].n });
     }
 
     if (req.method === 'DELETE') {

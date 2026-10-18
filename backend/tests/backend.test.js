@@ -571,3 +571,18 @@ test('legal pages are in sync with the shared header and footer', async () => {
     assert.equal((html.match(/<footer /g) || []).length, 1);
   }
 });
+
+// ---- paging and search helper for the admin lists ----
+test('listParams: page size, offset and safe search text', async () => {
+  const { listParams, PAGE_SIZE } = await import('../../backend/lib/http.js');
+  assert.equal(PAGE_SIZE, 25);
+  assert.deepEqual(listParams({ query: {} }), { like: null, offset: 0, limit: 25 });
+  assert.equal(listParams({ query: { offset: '50' } }).offset, 50);
+  for (const bad of ['-5', 'abc', '1.5', '', undefined]) assert.equal(listParams({ query: { offset: bad } }).offset, 0, String(bad));
+  assert.equal(listParams({ query: { offset: '99999999' } }).offset, 100000);
+  assert.equal(listParams({ query: { q: '  Ann  ' } }).like, '%Ann%');
+  // % _ and \ are escaped so they only match themselves
+  assert.equal(listParams({ query: { q: '100%_x\\' } }).like, '%100\\%\\_x\\\\%');
+  assert.equal(listParams({ query: { q: 'x'.repeat(200) } }).like.length, 62);
+  assert.equal(listParams({ query: { q: '   ' } }).like, null);
+});

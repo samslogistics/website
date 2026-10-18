@@ -50,7 +50,7 @@
         <!-- Dashboard -->
         <section id="app-view" class="hidden">
             <!-- Tabs -->
-            <div class="flex gap-2 mb-6 border-b border-gray-200">
+            <div class="flex gap-2 mb-6 border-b border-gray-200 overflow-x-auto whitespace-nowrap">
                 <button id="tab-btn-shipments" type="button" class="px-4 py-2 font-semibold text-sams-blue border-b-2 border-sams-gold -mb-px">Shipments</button>
                 <button id="tab-btn-requests" type="button" class="px-4 py-2 font-semibold text-gray-500 border-b-2 border-transparent -mb-px hover:text-sams-blue">
                     Requests <span id="requests-badge" class="hidden ml-1 rounded-full bg-sams-gold text-sams-blue text-xs font-bold px-2 py-0.5"></span>
@@ -67,12 +67,12 @@
             <div id="tab-shipments" class="grid lg:grid-cols-3 gap-6">
 
                 <!-- Left: list -->
-                <div class="lg:col-span-2 space-y-4">
+                <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
                         <h1 class="font-heading font-bold text-xl text-sams-blue">Shipments</h1>
                         <div class="flex gap-2">
-                            <input id="search-input" type="search" placeholder="Search ref or name"
-                                   class="rounded-lg border border-gray-300 px-3 py-2 text-sm w-48 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                            <input id="search-input" type="search" placeholder="Search ref, name, email" maxlength="60"
+                                   class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
                             <button id="new-btn" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">
                                 <i class="fa-solid fa-plus mr-1"></i> New shipment
                             </button>
@@ -92,7 +92,11 @@
                             </thead>
                             <tbody id="shipment-rows"></tbody>
                         </table>
-                        <p id="list-empty" class="hidden p-6 text-center text-gray-500">No shipments yet.</p>
+                        <p id="list-empty" class="hidden p-6 text-center text-gray-500">No shipments found.</p>
+                        <div id="list-more" class="hidden border-t px-4 py-3 text-sm text-gray-600 flex items-center justify-between gap-3">
+                            <span id="list-count"></span>
+                            <button id="list-more-btn" type="button" class="px-4 py-1.5 rounded-lg border border-gray-300 font-semibold text-sams-blue hover:bg-gray-50 disabled:opacity-50">Load more</button>
+                        </div>
                     </div>
                 </div>
 
@@ -174,15 +178,19 @@
 
             <!-- Requests tab -->
             <div id="tab-requests" class="hidden grid lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 space-y-4">
+                <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
                         <h1 class="font-heading font-bold text-xl text-sams-blue">Booking requests</h1>
-                        <select id="request-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
-                            <option value="new">New</option>
-                            <option value="accepted">Accepted</option>
-                            <option value="declined">Declined</option>
-                            <option value="all">All</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2">
+                            <input id="request-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                               class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                            <select id="request-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                                <option value="new">New</option>
+                                <option value="accepted">Accepted</option>
+                                <option value="declined">Declined</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="bg-white rounded-2xl shadow overflow-x-auto">
                         <table class="w-full text-sm">
@@ -198,7 +206,11 @@
                             </thead>
                             <tbody id="request-rows"></tbody>
                         </table>
-                        <p id="request-empty" class="hidden p-6 text-center text-gray-500">No requests here.</p>
+                        <p id="request-empty" class="hidden p-6 text-center text-gray-500">No requests found.</p>
+                        <div id="request-more" class="hidden border-t px-4 py-3 text-sm text-gray-600 flex items-center justify-between gap-3">
+                            <span id="request-count"></span>
+                            <button id="request-more-btn" type="button" class="px-4 py-1.5 rounded-lg border border-gray-300 font-semibold text-sams-blue hover:bg-gray-50 disabled:opacity-50">Load more</button>
+                        </div>
                     </div>
                 </div>
 
@@ -231,16 +243,20 @@
             </div>
             <!-- Supply orders tab -->
             <div id="tab-orders" class="hidden grid lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 space-y-4">
+                <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
                         <h1 class="font-heading font-bold text-xl text-sams-blue">Supply orders</h1>
-                        <select id="order-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
-                            <option value="new">New</option>
-                            <option value="confirmed">Confirmed</option>
-                            <option value="completed">Completed</option>
-                            <option value="cancelled">Cancelled</option>
-                            <option value="all">All</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2">
+                            <input id="order-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                               class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                            <select id="order-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                                <option value="new">New</option>
+                                <option value="confirmed">Confirmed</option>
+                                <option value="completed">Completed</option>
+                                <option value="cancelled">Cancelled</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="bg-white rounded-2xl shadow overflow-x-auto">
                         <table class="w-full text-sm">
@@ -256,7 +272,11 @@
                             </thead>
                             <tbody id="order-rows"></tbody>
                         </table>
-                        <p id="order-empty" class="hidden p-6 text-center text-gray-500">No orders here.</p>
+                        <p id="order-empty" class="hidden p-6 text-center text-gray-500">No orders found.</p>
+                        <div id="order-more" class="hidden border-t px-4 py-3 text-sm text-gray-600 flex items-center justify-between gap-3">
+                            <span id="order-count"></span>
+                            <button id="order-more-btn" type="button" class="px-4 py-1.5 rounded-lg border border-gray-300 font-semibold text-sams-blue hover:bg-gray-50 disabled:opacity-50">Load more</button>
+                        </div>
                     </div>
                 </div>
 
@@ -295,14 +315,18 @@
 
             <!-- Contact messages tab -->
             <div id="tab-messages" class="hidden grid lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 space-y-4">
+                <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
                         <h1 class="font-heading font-bold text-xl text-sams-blue">Contact messages</h1>
-                        <select id="message-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
-                            <option value="new">New</option>
-                            <option value="handled">Handled</option>
-                            <option value="all">All</option>
-                        </select>
+                        <div class="flex flex-wrap gap-2">
+                            <input id="message-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                               class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
+                            <select id="message-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                                <option value="new">New</option>
+                                <option value="handled">Handled</option>
+                                <option value="all">All</option>
+                            </select>
+                        </div>
                     </div>
                     <div class="bg-white rounded-2xl shadow overflow-x-auto">
                         <table class="w-full text-sm">
@@ -317,7 +341,11 @@
                             </thead>
                             <tbody id="message-rows"></tbody>
                         </table>
-                        <p id="message-empty" class="hidden p-6 text-center text-gray-500">No messages here.</p>
+                        <p id="message-empty" class="hidden p-6 text-center text-gray-500">No messages found.</p>
+                        <div id="message-more" class="hidden border-t px-4 py-3 text-sm text-gray-600 flex items-center justify-between gap-3">
+                            <span id="message-count"></span>
+                            <button id="message-more-btn" type="button" class="px-4 py-1.5 rounded-lg border border-gray-300 font-semibold text-sams-blue hover:bg-gray-50 disabled:opacity-50">Load more</button>
+                        </div>
                     </div>
                 </div>
 
@@ -351,7 +379,7 @@
 
             <!-- Supplies catalogue tab -->
             <div id="tab-supplies" class="hidden grid lg:grid-cols-3 gap-6">
-                <div class="lg:col-span-2 space-y-4">
+                <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
                         <h1 class="font-heading font-bold text-xl text-sams-blue">Supplies catalogue</h1>
                         <button id="new-item-btn" type="button" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">

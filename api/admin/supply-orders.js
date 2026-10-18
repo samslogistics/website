@@ -1,5 +1,5 @@
 // Admin supply orders.
-// GET  /api/admin/supply-orders?status=new|confirmed|completed|cancelled|all -> list (max 100) + count of new
+// GET  /api/admin/supply-orders?status=new|confirmed|completed|cancelled|all&q=text&offset=0 -> 25 per page + total + count of new
 // POST /api/admin/supply-orders  { id, action: 'confirm' | 'complete' | 'cancel' }
 //   confirm:  new -> confirmed
 //   complete: new or confirmed -> completed
@@ -7,7 +7,7 @@
 // DELETE /api/admin/supply-orders?id=123 -> remove an order and its lines
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
-import { json, methodGuard, bodyOf } from '../../backend/lib/http.js';
+import { json, methodGuard, bodyOf, listParams } from '../../backend/lib/http.js';
 
 const FILTERS = ['new', 'confirmed', 'completed', 'cancelled', 'all'];
 const ACTIONS = ['confirm', 'complete', 'cancel'];
@@ -20,6 +20,7 @@ export default async function handler(req, res) {
     if (req.method === 'GET') {
       const sql = db();
       const status = FILTERS.includes(req.query?.status) ? req.query.status : 'new';
+      const { like, offset, limit } = listParams(req);
       const rows = await sql`
         SELECT o.id, o.reference, o.customer_name, o.customer_phone, o.customer_email,
                o.fulfilment, o.address, o.note, o.status, o.created_at, o.handled_at,
@@ -31,9 +32,16 @@ export default async function handler(req, res) {
                ), '[]'::json) AS lines
         FROM supply_orders o
         WHERE (${status} = 'all' OR o.status = ${status})
-        ORDER BY o.created_at DESC LIMIT 100`;
+          AND (${like}::text IS NULL OR o.reference ILIKE ${like} OR o.customer_name ILIKE ${like}
+               OR o.customer_email ILIKE ${like} OR o.customer_phone ILIKE ${like})
+        ORDER BY o.created_at DESC, o.id DESC LIMIT ${limit} OFFSET ${offset}`;
+      const t = await sql`
+        SELECT count(*)::int AS n FROM supply_orders o
+        WHERE (${status} = 'all' OR o.status = ${status})
+          AND (${like}::text IS NULL OR o.reference ILIKE ${like} OR o.customer_name ILIKE ${like}
+               OR o.customer_email ILIKE ${like} OR o.customer_phone ILIKE ${like})`;
       const counts = await sql`SELECT count(*)::int AS n FROM supply_orders WHERE status = 'new'`;
-      return json(res, 200, { orders: rows, newCount: counts[0].n });
+      return json(res, 200, { orders: rows, total: t[0].n, newCount: counts[0].n });
     }
 
     if (req.method === 'DELETE') {

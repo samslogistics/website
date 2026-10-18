@@ -1,9 +1,9 @@
-// GET  /api/admin/shipments?q=text  -> latest shipments (max 100)
+// GET  /api/admin/shipments?q=text&offset=0  -> shipments, 25 per page, newest first, plus the total
 // POST /api/admin/shipments         -> create shipment + first event
 import { db } from '../../backend/lib/db.js';
 import { requireAdmin } from '../../backend/lib/auth.js';
 import { SERVICES, DESTINATIONS } from '../../backend/lib/constants.js';
-import { json, methodGuard, bodyOf, clean, generateRef } from '../../backend/lib/http.js';
+import { json, methodGuard, bodyOf, clean, generateRef, listParams } from '../../backend/lib/http.js';
 
 export default async function handler(req, res) {
   if (!methodGuard(req, res, ['GET', 'POST'])) return;
@@ -12,18 +12,18 @@ export default async function handler(req, res) {
   try {
     if (req.method === 'GET') {
       const sql = db();
-      const q = clean(req.query?.q, 60);
-      const like = q ? `%${q.replace(/[\\%_]/g, '\\$&')}%` : null;
-      const rows = like
-        ? await sql`
-            SELECT tracking_ref, service, destination, customer_name, receiver_name, status, created_at, updated_at
-            FROM shipments
-            WHERE tracking_ref ILIKE ${like} OR customer_name ILIKE ${like} OR receiver_name ILIKE ${like}
-            ORDER BY created_at DESC LIMIT 100`
-        : await sql`
-            SELECT tracking_ref, service, destination, customer_name, receiver_name, status, created_at, updated_at
-            FROM shipments ORDER BY created_at DESC LIMIT 100`;
-      return json(res, 200, { shipments: rows });
+      const { like, offset, limit } = listParams(req);
+      const rows = await sql`
+        SELECT tracking_ref, service, destination, customer_name, receiver_name, status, created_at, updated_at
+        FROM shipments
+        WHERE (${like}::text IS NULL OR tracking_ref ILIKE ${like} OR customer_name ILIKE ${like}
+               OR receiver_name ILIKE ${like} OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like})
+        ORDER BY created_at DESC, id DESC LIMIT ${limit} OFFSET ${offset}`;
+      const t = await sql`
+        SELECT count(*)::int AS n FROM shipments
+        WHERE (${like}::text IS NULL OR tracking_ref ILIKE ${like} OR customer_name ILIKE ${like}
+               OR receiver_name ILIKE ${like} OR customer_email ILIKE ${like} OR customer_phone ILIKE ${like})`;
+      return json(res, 200, { shipments: rows, total: t[0].n });
     }
 
     const b = bodyOf(req);

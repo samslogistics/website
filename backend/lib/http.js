@@ -24,6 +24,16 @@ export function clean(value, max = 200) {
   return s ? s.slice(0, max) : null;
 }
 
+// Paging + search for the admin lists: ?q=text&offset=25. Fixed page size, text matched with ILIKE.
+export const PAGE_SIZE = 25;
+export function listParams(req) {
+  const q = clean(req.query?.q, 60);
+  const like = q ? `%${q.replace(/[\\%_]/g, '\\$&')}%` : null;
+  const off = Number(req.query?.offset);
+  const offset = Number.isSafeInteger(off) && off > 0 ? Math.min(off, 100000) : 0;
+  return { like, offset, limit: PAGE_SIZE };
+}
+
 export function bodyOf(req) {
   return req.body && typeof req.body === 'object' ? req.body : {};
 }
