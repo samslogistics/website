@@ -31,7 +31,7 @@ backend/tests               node:test unit tests (npm test)
 1. **Neon**: create a project, open the SQL Editor and run `backend/db/schema.sql`.
 2. **Vercel** -> Project -> Settings -> Environment Variables, add (see `.env.example`):
    - `DATABASE_URL` - Neon pooled connection string
-   - `ADMIN_PASSWORD` - long passphrase for `/admin.html`
+   - `ADMIN_PASSWORD` - long passphrase for `/admin`
    - `SESSION_SECRET` - random 32+ character string
 3. Deploy (push to the connected repo, or `vercel --prod`).
 4. Open `/admin.html`, sign in, create a test shipment, then look it up in the tracking form on the home page.
