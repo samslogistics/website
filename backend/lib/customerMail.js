@@ -13,7 +13,7 @@ import { SERVICES, FULFILMENT } from './constants.js';
 import { EMAIL_RE } from './http.js';
 import { request, siteUrl, describeItems } from './notify.js';
 
-const PHONE = '07432294414';
+const PHONE = '+447432294414';
 const brand = "Sam's Logistics UK";
 
 const replyTo = () => process.env.REPLY_TO_EMAIL || 'samslogistics.gh@gmail.com';
