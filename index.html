@@ -27,13 +27,19 @@
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
     <link rel="manifest" href="assets/images/site.webmanifest">    
 
-    <!-- Google Fonts -->
+    <!-- Hero photo: start downloading straight away (phones get a smaller file than desktop) -->
+    <link rel="preload" as="image" href="assets/images/hero-bg-mobile.webp" type="image/webp" media="(max-width: 1023px)" fetchpriority="high">
+    <link rel="preload" as="image" href="assets/images/hero-bg.webp" type="image/webp" media="(min-width: 1024px)" fetchpriority="high">
+
+    <!-- Google Fonts (loaded without blocking the first paint) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600&display=swap" onload="this.onload=null;this.rel=\'stylesheet\'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;0,900;1,600&family=Open+Sans:wght@400;600&display=swap"></noscript>
     
     <!-- Font Awesome for Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" onload="this.onload=null;this.rel=\'stylesheet\';document.documentElement.classList.add(\'fa-ready\')">
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></noscript>
 
     <!-- 1. Tailwind CSS (compiled, see README) -->
     <link rel="stylesheet" href="frontend/styles/tailwind.css">
@@ -74,7 +80,7 @@
             <div class="flex flex-row justify-between items-center h-20 md:h-24">
                 <!-- Logo Area -->
                 <div class="flex-shrink-0 flex items-center gap-3 p-2 sm:p-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
+                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="192" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
                 </div>
 
                 <!-- Desktop Menu (Flexbox) -->
@@ -155,19 +161,19 @@
 
                         <div class="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5">
                             <!-- UK Flag -->
-                            <img src="assets/images/flag-uk.webp" title="UK" alt="UK Flag" class="h-8 w-auto rounded object-cover shadow-sm">
+                            <img src="assets/images/flag-uk.webp" title="UK" alt="UK Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
                             
                             <!-- Arrow Divider -->
                             <i class="fa-solid fa-angles-right text-sams-gold text-lg"></i>
                             
                             <!-- Ghana Flag -->
-                            <img src="assets/images/flag-ghana.webp" title="GH" alt="Ghana Flag" class="h-8 w-auto rounded object-cover shadow-sm">
+                            <img src="assets/images/flag-ghana.webp" title="GH" alt="Ghana Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
                             
                             <!-- Vertical Divider -->
                             <span class="text-white/40">|</span>
                             
                             <!-- Jamaica Flag -->
-                            <img src="assets/images/flag-jamaica.webp" title="JA" alt="Jamaica Flag" class="h-8 w-auto rounded object-cover shadow-sm">
+                            <img src="assets/images/flag-jamaica.webp" title="JA" alt="Jamaica Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
                         </div>
 
                         <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center lg:justify-start pt-2">
@@ -215,7 +221,7 @@
         <section id="services" class="py-12 sm:py-20 bg-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
                 <div class="text-center mb-10 sm:mb-16 flex flex-col items-center">
-                    <span class="text-sams-light-blue font-bold tracking-widest text-xs uppercase mb-2">Tailored Logistics Solutions</span>
+                    <span class="text-eyebrow-blue font-bold tracking-widest text-xs uppercase mb-2">Tailored Logistics Solutions</span>
                     <h2 class="font-heading font-extrabold text-3xl sm:text-4xl text-sams-blue mb-4">Our Premium Services</h2>
                     <p class="text-gray-600 max-w-2xl text-base sm:text-lg">We offer a comprehensive range of logistics solutions tailored to meet your shipping needs safely and efficiently.</p>
                 </div>
@@ -484,19 +490,19 @@
                         <div class="w-full lg:w-1/2 bg-gray-50 p-6 sm:p-10 flex items-center justify-center min-h-[300px]">
                             <div class="grid grid-cols-2 gap-4 w-full max-w-md justify-center items-center">
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/cardboard-boxes.webp" alt="Various sizes of cardboard boxes" title="All sizes available" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/cardboard-boxes.webp" alt="Various sizes of cardboard boxes" title="All sizes available" width="512" height="565" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Durable Boxes</span>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/blue-shipping-burrels.webp" alt="Blue shipping barrels" title="Big, medium and small sizes available" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/blue-shipping-burrels.webp" alt="Blue shipping barrels" title="Big, medium and small sizes available" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Heavy-Duty Barrels</span>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/premium-brown-tape.webp" alt="Premium brown packing tape" title="Buy in retail or wholesale" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/premium-brown-tape.webp" alt="Premium brown packing tape" title="Buy in retail or wholesale" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Premium Packing Tape</span>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/shrink-wrap.webp" alt="Clear shrink wrap packaging film" title="Buy in retail or wholesale" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/shrink-wrap.webp" alt="Clear shrink wrap packaging film" title="Buy in retail or wholesale" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Shrink Wrap</span>
                                 </div>
                             </div>
@@ -593,7 +599,7 @@
                         <div class="text-sams-gold text-4xl sm:text-5xl mb-3">
                             <i class="fa-solid fa-shield-halved"></i>
                         </div>
-                        <h4 class="font-heading font-bold text-lg sm:text-xl mb-1.5">SAFE & SECURE</h4>
+                        <h3 class="font-heading font-bold text-lg sm:text-xl mb-1.5">SAFE & SECURE</h3>
                         <p class="text-blue-100 text-xs sm:text-sm">Your goods are in safe hands. We treat every parcel as if it were our own.</p>
                     </div>
 
@@ -601,7 +607,7 @@
                         <div class="text-sams-gold text-4xl sm:text-5xl mb-3">
                             <i class="fa-solid fa-location-dot"></i>
                         </div>
-                        <h4 class="font-heading font-bold text-lg sm:text-xl mb-1.5">TRACK & TRACE</h4>
+                        <h3 class="font-heading font-bold text-lg sm:text-xl mb-1.5">TRACK & TRACE</h3>
                         <p class="text-blue-100 text-xs sm:text-sm">Track your shipment every step of the way with our real-time portal.</p>
                     </div>
 
@@ -609,7 +615,7 @@
                         <div class="text-sams-gold text-4xl sm:text-5xl mb-3">
                             <i class="fa-solid fa-headset"></i>
                         </div>
-                        <h4 class="font-heading font-bold text-lg sm:text-xl mb-1.5">EXCELLENT CUSTOMER SERVICE</h4>
+                        <h3 class="font-heading font-bold text-lg sm:text-xl mb-1.5">EXCELLENT CUSTOMER SERVICE</h3>
                         <p class="text-blue-100 text-xs sm:text-sm">We are here to help you. Dedicated support team ready to assist.</p>
                     </div>
 
@@ -643,7 +649,7 @@
                                     <span>Message us on WhatsApp</span>
                                 </a>
                             </div>
-                            <img src="assets/images/ready-to-ship.webp" alt="Ready to ship your items with Sam's Logistics" title="Ready to ship your items" class="mt-6 w-full max-w-sm self-center rounded-2xl object-contain">
+                            <img src="assets/images/ready-to-ship.webp" alt="Ready to ship your items with Sam's Logistics" title="Ready to ship your items" width="768" height="429" loading="lazy" decoding="async" class="mt-6 w-full max-w-sm self-center rounded-2xl object-contain">
                         </div>
 
                         <form id="contact-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4" novalidate>
@@ -732,7 +738,7 @@
                 
                 <!-- Brand Col -->
                 <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4 flex flex-col items-start">
-                    <img src="assets/images/sams-logo.png" alt="Sam's Logistics" class="h-24 w-auto object-contain mb-3">
+                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="192" loading="lazy" decoding="async" class="h-24 w-auto object-contain mb-3">
                     <p class="text-blue-100 text-xs sm:text-sm leading-relaxed mb-6">
                         Providing fast, reliable, and affordable door-to-door shipping from the UK to Ghana and Jamaica.
                     </p>
@@ -745,7 +751,7 @@
 
                 <!-- Quick Links -->
                 <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Quick Links</h3>
                     <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
                         <li><a href="#" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Home</a></li>
                         <li><a href="#services" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Services</a></li>
@@ -756,7 +762,7 @@
 
                 <!-- Legal -->
                 <div class="w-full sm:w-[calc(50%-20px)] md:w-[calc(50%-20px)] lg:w-1/5">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Legal</h3>
                     <ul class="flex flex-col space-y-2.5 text-blue-100 text-xs sm:text-sm">
                         <li><a href="privacy_policy.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Privacy Policy</a></li>
                         <li><a href="disclaimer.html" class="hover:text-sams-gold transition-colors inline-block py-1"><i class="fa-solid fa-chevron-right text-[10px] mr-2 text-sams-gold"></i> Disclaimer</a></li>
@@ -767,7 +773,7 @@
 
                 <!-- Contact -->
                 <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4">
-                    <h4 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h4>
+                    <h3 class="font-bold text-base sm:text-lg mb-4 border-b border-white/20 pb-2 inline-block">Contact Us</h3>
                     <ul class="flex flex-col space-y-3 text-blue-100 text-xs sm:text-sm">
                         <li class="flex items-start gap-3">
                             <i class="fa-solid fa-map-location-dot mt-1 text-sams-gold"></i>
