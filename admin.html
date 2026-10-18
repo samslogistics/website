@@ -24,7 +24,7 @@
         <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-3">
                 <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="192" class="h-10 w-auto rounded">
-                <span class="font-heading font-bold tracking-wide">Admin</span>
+                <h1 class="font-heading font-bold tracking-wide">Admin</h1>
             </div>
             <div class="flex items-center gap-4 text-sm">
                 <a href="index.html" class="hover:text-sams-gold">View site</a>
@@ -37,7 +37,7 @@
 
         <!-- Login -->
         <section id="login-view" class="hidden max-w-sm mx-auto bg-white rounded-2xl shadow p-6 mt-10">
-            <h1 class="font-heading font-bold text-xl text-sams-blue mb-4">Sign in</h1>
+            <h2 class="font-heading font-bold text-xl text-sams-blue mb-4">Sign in</h2>
             <form id="login-form" class="space-y-4">
                 <div>
                     <label for="login-password" class="block text-sm font-semibold mb-1">Password</label>
@@ -71,9 +71,9 @@
                 <!-- Left: list -->
                 <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
-                        <h1 class="font-heading font-bold text-xl text-sams-blue">Shipments</h1>
+                        <h2 class="font-heading font-bold text-xl text-sams-blue">Shipments</h2>
                         <div class="flex gap-2">
-                            <input id="search-input" type="search" placeholder="Search ref, name, email" maxlength="60"
+                            <input id="search-input" aria-label="Search shipments" type="search" placeholder="Search ref, name, email" maxlength="60"
                                    class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
                             <button id="new-btn" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">
                                 <i class="fa-solid fa-plus mr-1"></i> New shipment
@@ -110,7 +110,7 @@
 
                     <!-- New shipment form -->
                     <form id="new-form" class="hidden bg-white rounded-2xl shadow p-6 space-y-3">
-                        <h2 class="font-heading font-bold text-sams-blue">New shipment</h2>
+                        <h3 class="font-heading font-bold text-sams-blue">New shipment</h3>
                         <div>
                             <label class="block text-xs font-semibold mb-1" for="n-service">Service</label>
                             <select id="n-service" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
@@ -158,10 +158,10 @@
                         <dl id="d-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
 
                         <form id="event-form" class="space-y-3 border-t pt-4">
-                            <h3 class="font-semibold text-sm">Add status update</h3>
-                            <select id="e-status" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
-                            <input id="e-location" placeholder="Location (optional)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
-                            <input id="e-note" placeholder="Note shown to customer (optional)" maxlength="500" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <h4 class="font-semibold text-sm">Add status update</h4>
+                            <select id="e-status" aria-label="Status" required class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm"></select>
+                            <input id="e-location" aria-label="Location" placeholder="Location (optional)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <input id="e-note" aria-label="Note shown to customer" placeholder="Note shown to customer (optional)" maxlength="500" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                             <label class="flex items-start gap-2 text-sm text-gray-700">
                                 <input id="e-notify" type="checkbox" class="mt-0.5 rounded border-gray-300">
                                 <span>Email the customer about this update <span id="e-notify-hint" class="block text-xs text-gray-500"></span></span>
@@ -182,11 +182,11 @@
             <div id="tab-requests" class="hidden grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
-                        <h1 class="font-heading font-bold text-xl text-sams-blue">Booking requests</h1>
+                        <h2 class="font-heading font-bold text-xl text-sams-blue">Booking requests</h2>
                         <div class="flex flex-wrap gap-2">
-                            <input id="request-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                            <input id="request-search" aria-label="Search booking requests" type="search" placeholder="Search ref, name, email" maxlength="60"
                                class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
-                            <select id="request-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                            <select id="request-filter" aria-label="Filter requests by status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
                                 <option value="new">New</option>
                                 <option value="accepted">Accepted</option>
                                 <option value="declined">Declined</option>
@@ -228,7 +228,7 @@
                         </div>
                         <dl id="r-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
                         <div id="r-actions" class="border-t pt-4 space-y-3">
-                            <input id="r-location" placeholder="Starting location (optional, default UK)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
+                            <input id="r-location" aria-label="Starting location" placeholder="Starting location (optional, default UK)" maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
                             <p id="r-error" class="hidden text-sm text-red-600"></p>
                             <div class="flex gap-2">
                                 <button id="r-accept" type="button" class="flex-1 bg-sams-blue text-white font-semibold rounded-lg py-2 hover:bg-sams-light-blue transition">Accept &amp; create shipment</button>
@@ -247,11 +247,11 @@
             <div id="tab-orders" class="hidden grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
-                        <h1 class="font-heading font-bold text-xl text-sams-blue">Supply orders</h1>
+                        <h2 class="font-heading font-bold text-xl text-sams-blue">Supply orders</h2>
                         <div class="flex flex-wrap gap-2">
-                            <input id="order-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                            <input id="order-search" aria-label="Search supply orders" type="search" placeholder="Search ref, name, email" maxlength="60"
                                class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
-                            <select id="order-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                            <select id="order-filter" aria-label="Filter orders by status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
                                 <option value="new">New</option>
                                 <option value="confirmed">Confirmed</option>
                                 <option value="completed">Completed</option>
@@ -294,7 +294,7 @@
                         </div>
                         <dl id="o-info" class="text-sm grid grid-cols-3 gap-y-1"></dl>
                         <div class="border-t pt-4">
-                            <h3 class="font-semibold text-sm mb-2">Items</h3>
+                            <h4 class="font-semibold text-sm mb-2">Items</h4>
                             <ul id="o-lines" class="text-sm space-y-1"></ul>
                             <p id="o-total" class="mt-3 text-sm font-semibold text-sams-blue"></p>
                         </div>
@@ -319,11 +319,11 @@
             <div id="tab-messages" class="hidden grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
-                        <h1 class="font-heading font-bold text-xl text-sams-blue">Contact messages</h1>
+                        <h2 class="font-heading font-bold text-xl text-sams-blue">Contact messages</h2>
                         <div class="flex flex-wrap gap-2">
-                            <input id="message-search" type="search" placeholder="Search ref, name, email" maxlength="60"
+                            <input id="message-search" aria-label="Search contact messages" type="search" placeholder="Search ref, name, email" maxlength="60"
                                class="rounded-lg border border-gray-300 px-3 py-2 text-sm flex-1 min-w-0 sm:flex-none sm:w-52 focus:outline-none focus:ring-2 focus:ring-sams-light-blue">
-                            <select id="message-filter" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
+                            <select id="message-filter" aria-label="Filter messages by status" class="rounded-lg border border-gray-300 px-3 py-2 text-sm bg-white">
                                 <option value="new">New</option>
                                 <option value="handled">Handled</option>
                                 <option value="all">All</option>
@@ -383,7 +383,7 @@
             <div id="tab-supplies" class="hidden grid lg:grid-cols-3 gap-6">
                 <div class="lg:col-span-2 space-y-4 min-w-0">
                     <div class="flex flex-wrap items-center gap-3 justify-between">
-                        <h1 class="font-heading font-bold text-xl text-sams-blue">Supplies catalogue</h1>
+                        <h2 class="font-heading font-bold text-xl text-sams-blue">Supplies catalogue</h2>
                         <button id="new-item-btn" type="button" class="bg-sams-gold text-sams-blue font-semibold rounded-lg px-4 py-2 text-sm hover:brightness-95">
                             <i class="fa-solid fa-plus mr-1"></i> Add product
                         </button>
@@ -409,7 +409,7 @@
                         Select a product to edit it, or add a new one.
                     </div>
                     <form id="item-form" class="hidden bg-white rounded-2xl shadow p-6 space-y-3">
-                        <h2 id="item-form-title" class="font-heading font-bold text-sams-blue">Product</h2>
+                        <h3 id="item-form-title" class="font-heading font-bold text-sams-blue">Product</h3>
                         <div>
                             <label class="block text-xs font-semibold mb-1" for="i-name">Name</label>
                             <input id="i-name" required maxlength="120" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm">
