@@ -37,7 +37,8 @@ body {
 }
 
 /* Phones and tablets: show the whole photo as a banner at the top of the hero (not cropped),
-   tinted blue like on desktop and fading smoothly into the blue where the text starts. */
+   tinted blue like on desktop and fading smoothly into the blue where the text starts
+   (the fade begins low, at 78% of the photo's height, so most of the picture stays clear). */
 @media (max-width: 1023px) {
     .hero-background { background-image: url('../../assets/images/hero-bg-mobile.webp'); }
     .hero-section { padding-top: calc(100vw * 768 / 1376 - 1.25rem) !important; }
@@ -47,8 +48,8 @@ body {
         aspect-ratio: 1376 / 768;
         opacity: 0.6 !important;   /* same blue-tinted look as desktop, a little stronger so the photo reads */
         animation: none;
-        -webkit-mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
-        mask-image: linear-gradient(to bottom, #000 62%, transparent 100%);
+        -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+        mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
     }
 }
 
