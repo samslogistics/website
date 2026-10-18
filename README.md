@@ -122,5 +122,6 @@ The header and footer of `disclaimer.html`, `imprint.html`, `legal_notice.html` 
 
 - Save every picture at about twice the size it is shown on the page (the logo is 294 x 192, the supply photos 512 wide) and always give `<img>` tags `width` and `height`. A full-size image shown small is the biggest cause of a slow mobile score.
 - Pictures below the first screen use `loading="lazy"`. The hero photo is preloaded in the `<head>` of `index.html` and phones get the smaller `hero-bg-mobile.webp`.
-- Google Fonts and Font Awesome load without blocking the first paint (`rel="preload"` plus a `<noscript>` fallback).
+- Google Fonts load without blocking the first paint (`rel="preload"` plus a `<noscript>` fallback).
+- Icons come from our own small Font Awesome files (`frontend/styles/fontawesome-subset.css` and `frontend/webfonts/`), not from a CDN. They contain only the icons the site uses. After adding a new icon to a page or script, rebuild them with `scripts/build-icons.py` (instructions are at the top of that file). A brand icon (WhatsApp, Instagram...) must also be added to the `BRANDS` list there.
 - Headings step down one level at a time (h2, then h3) so screen readers can follow the page.
