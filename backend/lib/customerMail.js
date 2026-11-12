@@ -14,11 +14,11 @@ import { EMAIL_RE } from './http.js';
 import { request, siteUrl, describeItems } from './notify.js';
 
 const PHONE = '+447432294414';
-const brand = "Sam's Logistics UK";
+const brand = "Sam's Line Logistics";
 
 const replyTo = () => process.env.REPLY_TO_EMAIL || 'samslogistics.gh@gmail.com';
 const fromAddress = () =>
-  process.env.CUSTOMER_EMAIL_FROM || process.env.ALERT_EMAIL_FROM || "Sam's Logistics <onboarding@resend.dev>";
+  process.env.CUSTOMER_EMAIL_FROM || process.env.ALERT_EMAIL_FROM || "Sam's Line Logistics <onboarding@resend.dev>";
 
 export const trackUrl = (ref) => `${siteUrl()}/?track=${encodeURIComponent(ref)}#tracking`;
 

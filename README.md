@@ -1,4 +1,4 @@
-# Sam's Logistics UK
+# Sam's Line Logistics
 
 Static site (HTML + compiled Tailwind CSS) with a small backend on **Vercel serverless functions + Neon Postgres**.
 
@@ -66,7 +66,7 @@ When a booking request or supply order arrives, you get a short alert telling yo
 | --- | --- |
 | Email (Resend) | `RESEND_API_KEY`, `ALERT_EMAIL_TO` (optional `ALERT_EMAIL_FROM`) |
 | WhatsApp (CallMeBot) | `CALLMEBOT_PHONE` (with country code, e.g. `+447...`), `CALLMEBOT_APIKEY` |
-| Link in alerts | `SITE_URL` (optional, defaults to `https://samslogistics.co.uk`) |
+| Link in alerts | `SITE_URL` (optional, defaults to `https://samslinelogistics.co.uk`) |
 
 - The email has the full details (customer, items, addresses). The WhatsApp message only has the reference and a link, never phone numbers or addresses.
 - An alert can never block or fail a customer's request: each call times out after 3 seconds and failures are only logged in Vercel -> Logs.
@@ -79,7 +79,7 @@ Shipments, Requests, Orders and Messages show 25 rows at a time, newest first, w
 
 ## Customer emails
 
-When a customer gives an email address, they get plain-text service emails (not marketing) from `alerts@samslogistics.co.uk` via Resend. Replies go to the contact inbox.
+When a customer gives an email address, they get plain-text service emails (not marketing) from `alerts@samslinelogistics.co.uk` via Resend. Replies go to the contact inbox.
 
 - **Received**: after a booking request or supplies order.
 - **Accepted**: when you accept a booking in /admin, with the tracking number and a link (`/?track=SL-...`) that opens the tracking lookup automatically.

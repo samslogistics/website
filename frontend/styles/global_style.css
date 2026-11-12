@@ -6,56 +6,38 @@ body {
     overflow-x: hidden;
 }
 
-.hero-background {
-    background-image: url('../../assets/images/hero-bg.webp');
-    mix-blend-mode: luminosity;
-    /* Slow, gentle drift: the photo zooms and pans a little, back and forth */
-    animation: hero-drift 28s ease-in-out infinite alternate;
-    will-change: transform;
-}
-
-@keyframes hero-drift {
-    from { transform: scale(1.04) translate3d(0, 0, 0); }
-    to   { transform: scale(1.14) translate3d(-1.5%, -1%, 0); }
-}
-
 /* Hero text fades up one piece at a time on page load.
-   Uses the separate `translate` property so it never clashes with the badge's tilt. */
+   Uses the separate `translate` property so it never clashes with other transforms. */
 .hero-copy > * {
     animation: hero-rise 0.9s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 .hero-copy > *:nth-child(1) { animation-delay: 0.10s; }
-.hero-copy > *:nth-child(2) { animation-delay: 0.25s; }
-.hero-copy > *:nth-child(3) { animation-delay: 0.40s; }
-.hero-copy > *:nth-child(4) { animation-delay: 0.55s; }
-.hero-copy > *:nth-child(5) { animation-delay: 0.70s; }
-.hero-copy > *:nth-child(6) { animation-delay: 0.85s; }
+.hero-copy > *:nth-child(2) { animation-delay: 0.20s; }
+.hero-copy > *:nth-child(3) { animation-delay: 0.30s; }
+.hero-copy > *:nth-child(4) { animation-delay: 0.40s; }
+.hero-copy > *:nth-child(5) { animation-delay: 0.50s; }
+.hero-copy > *:nth-child(6) { animation-delay: 0.60s; }
+.hero-copy > *:nth-child(7) { animation-delay: 0.70s; }
+.hero-copy > *:nth-child(8) { animation-delay: 0.80s; }
 
 @keyframes hero-rise {
     from { opacity: 0; translate: 0 18px; }
     to   { opacity: 1; translate: 0 0; }
 }
 
-/* Phones and tablets: show the whole photo as a banner at the top of the hero (not cropped),
-   tinted blue like on desktop and fading smoothly into the blue where the text starts
-   (the fade begins low, at 78% of the photo's height, so most of the picture stays clear). */
-@media (max-width: 1023px) {
-    .hero-background { background-image: url('../../assets/images/hero-bg-mobile.webp'); }
-    .hero-section { padding-top: calc(100vw * 768 / 1376 - 1.25rem) !important; }
-    .hero-background {
-        bottom: auto !important;
-        height: auto !important;
-        aspect-ratio: 1376 / 768;
-        opacity: 0.6 !important;   /* same blue-tinted look as desktop, a little stronger so the photo reads */
-        animation: none;
-        -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
-        mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
-    }
+/* The globe artwork floats very gently */
+.hero-art {
+    animation: hero-float 7s ease-in-out infinite alternate;
+    will-change: transform;
+}
+@keyframes hero-float {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(0, -8px, 0); }
 }
 
 /* Visitors who ask their device for less motion get a still hero */
 @media (prefers-reduced-motion: reduce) {
-    .hero-background, .hero-copy > * { animation: none; }
+    .hero-art, .hero-copy > * { animation: none; }
 }
 
 .welcome-marquee {

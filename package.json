@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "type": "module",
-  "description": "Sam's Logistics UK - website with tracking and admin backend (Vercel + Neon)",
+  "description": "Sam's Line Logistics - website with tracking and admin backend (Vercel + Neon)",
   "engines": { "node": ">=20" },
   "scripts": {
     "dev": "vercel dev",

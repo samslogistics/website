@@ -7,9 +7,10 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'sams-blue': '#002654',
-        'sams-gold': '#FFB81C',
-        'sams-light-blue': '#0072CE',
+        'sams-blue': '#021B48',
+        'sams-gold': '#FBC704',
+        'sams-light-blue': '#0164D3',
+        'sams-sky': '#E6F1FF',
       },
       fontFamily: {
         sans: ['Open Sans', 'sans-serif'],

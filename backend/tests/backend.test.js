@@ -338,7 +338,7 @@ test('email goes to Resend with bearer key, reply_to and plain text', async () =
     assert.equal(body.reply_to, 'ama@example.com');
     assert.match(body.subject, /BR-ABC234.*Sea Freight/);
     assert.match(body.text, /07123456789/); // the email has the full details
-    assert.match(body.text, /https:\/\/samslogistics\.co\.uk\/admin/);
+    assert.match(body.text, /https:\/\/samslinelogistics\.co\.uk\/admin/);
   });
 });
 
@@ -462,7 +462,7 @@ test('contact alert: email has the full message with reply-to, WhatsApp text has
   assert.match(a.subject, /MS-ABC234.*Sea Freight/);
   assert.match(a.text, /Email: ama@example\.com/);
   assert.match(a.text, /How much for two barrels\?\nThanks/);
-  assert.match(a.text, /https:\/\/samslogistics\.co\.uk\/admin/);
+  assert.match(a.text, /https:\/\/samslinelogistics\.co\.uk\/admin/);
   assert.equal(a.replyTo, 'ama@example.com');
   assert.match(a.short, /MS-ABC234/);
   assert.ok(!/Ama|0712|barrels/.test(a.short), 'no personal data in the WhatsApp text');
@@ -528,7 +528,7 @@ test('customer email: failures and timeouts never throw', async () => {
 });
 
 test('customer email: texts are right and customer input never reaches subject or links', () => {
-  process.env.SITE_URL = 'https://samslogistics.co.uk';
+  process.env.SITE_URL = 'https://samslinelogistics.co.uk';
   const evil = { ...sampleBooking, name: 'Eve\r\nBcc: x@evil.com', reference: 'BR-ABC234' };
   const rec = customerMail.bookingReceivedMail(evil);
   assert.ok(!/[\r\n]/.test(rec.subject));
@@ -542,7 +542,7 @@ test('customer email: texts are right and customer input never reaches subject o
 
   const acc = customerMail.bookingAcceptedMail({ ...sampleBooking, trackingRef: 'SL-GH-ABC234' });
   assert.match(acc.subject, /SL-GH-ABC234/);
-  assert.match(acc.text, /https:\/\/samslogistics\.co\.uk\/\?track=SL-GH-ABC234#tracking/);
+  assert.match(acc.text, /https:\/\/samslinelogistics\.co\.uk\/\?track=SL-GH-ABC234#tracking/);
 
   const dec = customerMail.bookingDeclinedMail(sampleBooking);
   assert.match(dec.text, /not able to take this one on/);
@@ -565,7 +565,7 @@ test('legal pages are in sync with the shared header and footer', async () => {
     const html = fs.readFileSync(new URL(`../../${page}.html`, import.meta.url), 'utf8');
     assert.equal(render(page, html), html, `${page}.html is out of date, run: npm run build:pages`);
     // exactly one footer link is highlighted: the page itself
-    const active = [...html.matchAll(/href="(\w+)\.html" class="text-sams-gold font-bold/g)].map((m) => m[1]);
+    const active = [...html.matchAll(/href="\/(\w+)" class="text-sams-gold font-bold/g)].map((m) => m[1]);
     assert.deepEqual(active, [page], `${page}.html highlights the wrong footer link`);
     assert.equal((html.match(/<header /g) || []).length, 1);
     assert.equal((html.match(/<footer /g) || []).length, 1);

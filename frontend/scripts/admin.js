@@ -593,7 +593,7 @@ document.addEventListener('DOMContentLoaded', () => {
         $('m-body').textContent = m.message;
         // The address is encoded so it can never add extra mail headers (cc/bcc/subject) to the link.
         $('m-reply').href = 'mailto:' + encodeURIComponent(m.customer_email) +
-            '?subject=' + encodeURIComponent(`Re: your message to Sam's Logistics (${m.reference})`);
+            '?subject=' + encodeURIComponent(`Re: your message to Sam's Line Logistics (${m.reference})`);
         const call = $('m-call');
         call.classList.toggle('hidden', !m.customer_phone);
         if (m.customer_phone) call.href = 'tel:' + m.customer_phone.replace(/[^0-9+]/g, '');

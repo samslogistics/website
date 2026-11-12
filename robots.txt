@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /backend/
 
-Sitemap: https://samslogistics.co.uk/sitemap.xml
+Sitemap: https://samslinelogistics.co.uk/sitemap.xml
