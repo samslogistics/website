@@ -16,7 +16,7 @@ import { request, siteUrl, describeItems } from './notify.js';
 const PHONE = '+447432294414';
 const brand = "Sam's Line Logistics";
 
-const replyTo = () => process.env.REPLY_TO_EMAIL || 'samslogistics.gh@gmail.com';
+const replyTo = () => process.env.REPLY_TO_EMAIL || 'info@samslinelogistics.co.uk';
 const fromAddress = () =>
   process.env.CUSTOMER_EMAIL_FROM || process.env.ALERT_EMAIL_FROM || "Sam's Line Logistics <onboarding@resend.dev>";
 

@@ -88,7 +88,7 @@ When a customer gives an email address, they get plain-text service emails (not 
 
 No email address means no email. A failed send never blocks the booking or the update; /admin tells you if an email could not be sent.
 
-Optional settings: `REPLY_TO_EMAIL` (default `samslogistics.gh@gmail.com`) and `CUSTOMER_EMAIL_FROM` (default `ALERT_EMAIL_FROM`).
+Optional settings: `REPLY_TO_EMAIL` (default `info@samslinelogistics.co.uk`) and `CUSTOMER_EMAIL_FROM` (default `ALERT_EMAIL_FROM`).
 
 ## Contact form
 

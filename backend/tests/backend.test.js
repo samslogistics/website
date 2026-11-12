@@ -505,7 +505,7 @@ test('customer email: goes to the customer only, reply goes to the business inbo
     assert.equal(seen[0].url, 'https://api.resend.com/emails');
     assert.deepEqual(m.to, ['ama@example.com']);
     assert.equal(m.from, '"Sam\'s Logistics" <alerts@example.com>');
-    assert.equal(m.reply_to, 'samslogistics.gh@gmail.com');
+    assert.equal(m.reply_to, 'info@samslinelogistics.co.uk');
     assert.match(m.subject, /BR-ABC234/);
     assert.match(m.text, /Hello Ama,/);
     process.env.REPLY_TO_EMAIL = 'help@example.com';
