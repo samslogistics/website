@@ -3,26 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sam's Logistics UK | Shipping to Ghana &amp; Jamaica</title>
+    <title>Sam's Line Logistics | Shipping to Ghana &amp; Jamaica</title>
     <meta name="description" content="Reliable door-to-door shipping from the UK to Ghana and Jamaica. Air and sea freight, courier services, house removals, store pick-up, packing supplies and more.">
-    <link rel="canonical" href="https://samslogistics.co.uk/">
+    <link rel="canonical" href="https://samslinelogistics.co.uk/">
     
     <!-- Open Graph / WhatsApp / Facebook / LinkedIn -->
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://samslogistics.co.uk">
-    <meta property="og:title" content="Sam's Logistics UK | Shipping to Ghana &amp; Jamaica">
-    <meta property="og:description" content="Sam's Logistics UK | Reliable door-to-door shipping from the UK to Ghana and Jamaica.">
+    <meta property="og:url" content="https://samslinelogistics.co.uk">
+    <meta property="og:title" content="Sam's Line Logistics | Shipping to Ghana &amp; Jamaica">
+    <meta property="og:description" content="Sam's Line Logistics | Reliable door-to-door shipping from the UK to Ghana and Jamaica.">
     <!-- Must be an absolute URL pointing to your logo image -->
-    <meta property="og:image" content="https://samslogistics.co.uk/assets/images/og-image.jpg">
+    <meta property="og:image" content="https://samslinelogistics.co.uk/assets/images/og-image.jpg">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://samslogistics.co.uk/">
-    <meta name="twitter:title" content="Sam's Logistics UK | Shipping to Ghana &amp; Jamaica">
-    <meta name="twitter:description" content="Sam's Logistics UK | Reliable door-to-door shipping from the UK to Ghana and Jamaica.">
-    <meta name="twitter:image" content="https://samslogistics.co.uk/assets/images/og-image.jpg">
+    <meta name="twitter:url" content="https://samslinelogistics.co.uk/">
+    <meta name="twitter:title" content="Sam's Line Logistics | Shipping to Ghana &amp; Jamaica">
+    <meta name="twitter:description" content="Sam's Line Logistics | Reliable door-to-door shipping from the UK to Ghana and Jamaica.">
+    <meta name="twitter:image" content="https://samslinelogistics.co.uk/assets/images/og-image.jpg">
 
     <!-- FavIcons -->
     <link rel="apple-touch-icon" sizes="180x180" href="assets/images/apple-touch-icon.png">
@@ -30,9 +30,8 @@
     <link rel="icon" type="image/png" sizes="16x16" href="assets/images/favicon-16x16.png">
     <link rel="manifest" href="assets/images/site.webmanifest">    
 
-    <!-- Hero photo: start downloading straight away (phones get a smaller file than desktop) -->
-    <link rel="preload" as="image" href="assets/images/hero-bg-mobile.webp" type="image/webp" media="(max-width: 1023px)" fetchpriority="high">
-    <link rel="preload" as="image" href="assets/images/hero-bg.webp" type="image/webp" media="(min-width: 1024px)" fetchpriority="high">
+    <!-- Hero artwork: start downloading straight away -->
+    <link rel="preload" as="image" href="assets/images/hero-art.svg" type="image/svg+xml" fetchpriority="high">
 
     <!-- Google Fonts (loaded without blocking the first paint) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -66,7 +65,7 @@
                 <span class="inline-flex items-center"><i class="fa-solid fa-shield-halved mr-1 text-xs"></i> <span class="hidden xs:inline">Fast, Reliable, Affordable</span><span class="xs:hidden">Reliable Shipping</span></span>
             </div>
             <div class="hidden sm:block flex-1 min-w-0 mx-3 overflow-hidden text-center whitespace-nowrap" aria-live="polite">
-                <span class="welcome-marquee inline-block">SAM's LOGISTICS Welcomes You!</span>
+                <span class="welcome-marquee inline-block">SAM'S LINE LOGISTICS Welcomes You!</span>
             </div>
             <div class="flex items-center gap-3 sm:gap-4">
                 <a href="tel:+447432294414" class="hover:text-white transition-colors duration-200 flex items-center min-h-[36px] px-1">
@@ -84,11 +83,11 @@
             <div class="flex flex-row justify-between items-center h-20 md:h-24">
                 <!-- Logo Area -->
                 <div class="flex-shrink-0 flex items-center gap-3 p-2 sm:p-3 cursor-pointer" onclick="window.scrollTo(0,0)">
-                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="190" class="h-14 sm:h-16 md:h-20 w-auto object-contain">
+                    <img src="assets/images/sams-line-logo.svg" alt="Sam's Line Logistics" width="759" height="200" class="h-12 sm:h-14 xl:h-16 w-auto object-contain">
                 </div>
 
                 <!-- Desktop Menu (Flexbox) -->
-                <div class="hidden md:flex flex-row items-center space-x-8">
+                <div class="hidden lg:flex flex-row items-center space-x-6 xl:space-x-8">
                     <a href="#" class="text-sams-blue hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-sams-gold py-2">Home</a>
                     <a href="#services" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Services</a>
                     <a href="#booking" class="text-gray-600 hover:text-sams-light-blue font-semibold transition-colors duration-200 border-b-2 border-transparent hover:border-sams-gold py-2">Book Now</a>
@@ -100,7 +99,7 @@
                 </div>
 
                 <!-- Mobile Menu Toggle Button with Minimum Touch Sizing -->
-                <div class="md:hidden flex items-center">
+                <div class="lg:hidden flex items-center">
                     <button id="mobile-menu-btn" aria-label="Toggle Navigation Menu" class="text-sams-blue hover:text-sams-light-blue focus:outline-none p-3 rounded-lg active:bg-gray-100 flex items-center justify-center min-w-[48px] min-h-[48px]">
                         <i class="fa-solid fa-bars text-2xl"></i>
                     </button>
@@ -109,7 +108,7 @@
         </nav>
 
         <!-- Mobile Menu Drawer (Flexbox Layout) -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl left-0 right-0 z-50 transition-all">
+        <div id="mobile-menu" class="hidden lg:hidden bg-white border-t border-gray-100 absolute w-full shadow-2xl left-0 right-0 z-50 transition-all">
             <div class="flex flex-col p-4 space-y-2">
                 <a href="#" class="flex items-center min-h-[48px] px-4 rounded-xl text-base font-bold text-sams-blue bg-blue-50/80">
                     <i class="fa-solid fa-house mr-3 text-sams-light-blue"></i> Home
@@ -138,84 +137,108 @@
     <!-- Main Content Area -->
     <main class="flex-grow flex flex-col w-full">
         
-        <!-- Hero Section (Mobile-First Flexbox Layout) -->
-        <section class="hero-section relative bg-sams-blue text-white overflow-hidden py-10 sm:py-16 md:py-24">
-            <!-- Background Image overlay simulation -->
-            <div class="hero-background absolute inset-0 opacity-30 bg-cover bg-center bg-no-repeat pointer-events-none"></div>
-            
+        <!-- Hero Section: light, bright layout with the new globe / ship / plane artwork -->
+        <section class="hero-section relative overflow-hidden bg-gradient-to-b from-white via-sams-sky to-sams-sky pt-8 sm:pt-12 lg:pt-14">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
-                <div class="flex flex-col lg:flex-row items-center justify-between gap-10 lg:gap-12">
-                    
-                    <!-- Left Column: Typography & Call to Action (Flex Container) -->
-                    <div class="hero-copy w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-5 sm:space-y-6">
-                        <div class="inline-flex items-center bg-sams-gold text-sams-blue px-4 py-1.5 sm:px-6 sm:py-2 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase shadow-lg transform -rotate-1">
-                            <i class="fa-solid fa-bolt mr-2"></i> Fast, Reliable, Affordable
+                <div class="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
+
+                    <!-- Left Column: headline, route, services and call to action -->
+                    <div class="hero-copy w-full lg:w-1/2 flex flex-col items-center lg:items-start text-center lg:text-left space-y-4 sm:space-y-5">
+                        <div class="inline-flex items-center bg-sams-gold text-sams-blue px-4 py-1.5 sm:px-6 sm:py-2 rounded-full font-bold text-xs sm:text-sm tracking-wider uppercase shadow-md">
+                            <i class="fa-solid fa-shield-halved mr-2"></i> Fast, Reliable, Affordable
                         </div>
-                        
-                        <h1 class="font-heading font-black text-4xl sm:text-6xl lg:text-7xl leading-[1.1] tracking-tight drop-shadow-lg">
-                            <span class="block text-sams-light-blue">DOOR TO DOOR</span>
-                            <span class="block text-white">SHIPPING</span>
+
+                        <h1 class="font-heading font-black leading-[1.02] tracking-tight">
+                            <span class="block text-sams-blue text-3xl sm:text-5xl xl:text-6xl">DOOR TO DOOR</span>
+                            <span class="block text-sams-light-blue text-5xl sm:text-7xl xl:text-[5.5rem]">SHIPPING</span>
                         </h1>
-                        
-                        <div class="w-20 sm:w-24 h-1.5 sm:h-2 bg-sams-gold rounded-full my-1"></div>
-                        
-                        <p class="text-xl sm:text-2xl lg:text-3xl font-heading font-bold tracking-wide">
-                            FROM <span class="text-sams-gold">UK</span> TO <span class="text-sams-gold">GHANA</span> AND <span class="text-sams-gold">JAMAICA</span>
+
+                        <div class="flex items-center gap-3 text-sams-blue font-heading font-black text-lg sm:text-xl">
+                            <span class="h-1 w-10 sm:w-14 rounded-full bg-sams-gold"></span>
+                            FROM
+                            <span class="h-1 w-10 sm:w-14 rounded-full bg-sams-gold"></span>
+                        </div>
+
+                        <p class="rounded-2xl bg-sams-blue px-6 py-3 sm:px-8 sm:py-4 font-heading font-black text-white text-xl sm:text-3xl leading-tight shadow-lg">
+                            UK <span class="text-sams-gold">TO</span> GHANA<br><span class="text-sams-gold">AND</span> JAMAICA
                         </p>
 
-                        <div class="inline-flex items-center gap-3 rounded-2xl border border-white/20 bg-white/10 px-4 py-2.5">
-                            <!-- UK Flag -->
-                            <img src="assets/images/flag-uk.webp" title="UK" alt="UK Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
-                            
-                            <!-- Arrow Divider -->
-                            <i class="fa-solid fa-angles-right text-sams-gold text-lg"></i>
-                            
-                            <!-- Ghana Flag -->
-                            <img src="assets/images/flag-ghana.webp" title="GH" alt="Ghana Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
-                            
-                            <!-- Vertical Divider -->
-                            <span class="text-white/40">|</span>
-                            
-                            <!-- Jamaica Flag -->
-                            <img src="assets/images/flag-jamaica.webp" title="JA" alt="Jamaica Flag" width="192" height="128" class="h-8 w-auto rounded object-cover shadow-sm">
+                        <div class="inline-flex items-center gap-3">
+                            <img src="assets/images/flag-uk.webp" title="UK" alt="UK Flag" width="192" height="128" class="h-9 sm:h-11 w-auto rounded object-cover shadow-md">
+                            <i class="fa-solid fa-angles-right text-sams-light-blue text-xl"></i>
+                            <img src="assets/images/flag-ghana.webp" title="GH" alt="Ghana Flag" width="192" height="128" class="h-9 sm:h-11 w-auto rounded object-cover shadow-md">
+                            <span class="text-sams-blue/40 text-2xl font-light">|</span>
+                            <img src="assets/images/flag-jamaica.webp" title="JA" alt="Jamaica Flag" width="192" height="128" class="h-9 sm:h-11 w-auto rounded object-cover shadow-md">
                         </div>
 
-                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center lg:justify-start pt-2">
-                            <a href="tel:+447432294414" class="flex items-center justify-center min-h-[52px] bg-sams-gold text-sams-blue px-8 py-3.5 rounded-full font-extrabold text-base sm:text-lg hover:bg-yellow-400 hover:shadow-[0_0_20px_rgba(255,184,28,0.5)] transition-all duration-300 w-full sm:w-auto">
+                        <ul class="grid w-full max-w-md sm:max-w-none grid-cols-1 sm:grid-cols-3 lg:grid-cols-1 xl:grid-cols-3 lg:max-w-xs xl:max-w-none gap-2.5 text-left">
+                            <li class="flex items-center gap-3 rounded-full bg-sams-blue py-1.5 pl-1.5 pr-4 text-white shadow-md ring-2 ring-sams-gold">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sams-blue"><i class="fa-solid fa-plane"></i></span>
+                                <span class="leading-tight"><span class="block font-heading font-black text-sm">AIR FREIGHT</span><span class="block text-xs text-blue-100">Fast &amp; secure</span></span>
+                            </li>
+                            <li class="flex items-center gap-3 rounded-full bg-sams-blue py-1.5 pl-1.5 pr-4 text-white shadow-md ring-2 ring-sams-gold">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sams-blue"><i class="fa-solid fa-ship"></i></span>
+                                <span class="leading-tight"><span class="block font-heading font-black text-sm">SEA FREIGHT</span><span class="block text-xs text-blue-100">Affordable &amp; reliable</span></span>
+                            </li>
+                            <li class="flex items-center gap-3 rounded-full bg-sams-blue py-1.5 pl-1.5 pr-4 text-white shadow-md ring-2 ring-sams-gold">
+                                <span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white text-sams-blue"><i class="fa-solid fa-truck-fast"></i></span>
+                                <span class="leading-tight"><span class="block font-heading font-black text-sm">DOORSTEP DELIVERY</span><span class="block text-xs text-blue-100">We collect &amp; deliver</span></span>
+                            </li>
+                        </ul>
+
+                        <div class="flex flex-col sm:flex-row gap-3 w-full sm:w-auto justify-center lg:justify-start pt-1">
+                            <a href="tel:+447432294414" class="flex items-center justify-center min-h-[52px] bg-sams-gold text-sams-blue whitespace-nowrap px-6 xl:px-8 py-3.5 rounded-full font-black text-base sm:text-lg shadow-lg hover:bg-yellow-400 hover:shadow-xl transition-all duration-300 w-full sm:w-auto">
                                 <i class="fa-solid fa-phone-volume mr-2"></i> Get a Free Quote Now
                             </a>
-                            <a href="#booking" class="flex items-center justify-center min-h-[52px] border-2 border-white text-white px-8 py-3.5 rounded-full font-extrabold text-base sm:text-lg hover:bg-white hover:text-sams-blue transition-all duration-300 w-full sm:w-auto">
+                            <a href="#booking" class="flex items-center justify-center min-h-[52px] border-2 border-sams-blue text-sams-blue whitespace-nowrap px-6 xl:px-8 py-3.5 rounded-full font-black text-base sm:text-lg hover:bg-sams-blue hover:text-white transition-all duration-300 w-full sm:w-auto">
                                 <i class="fa-solid fa-calendar-check mr-2"></i> Book Online
                             </a>
                         </div>
+
+                        <a href="#supplies" class="inline-flex items-center gap-2 rounded-full border-2 border-sams-gold bg-white px-4 py-2 text-sm font-bold text-sams-blue shadow-sm hover:bg-sams-gold transition-colors">
+                            <i class="fa-solid fa-box-open"></i> We sell boxes (all sizes) and barrels
+                        </a>
                     </div>
 
-                    <!-- Right Column: Visual Element / Track & Trace (Mobile First Flex Form Card) -->
-                    <div class="w-full lg:w-1/2 max-w-md mx-auto lg:max-w-none lg:mx-0" id="tracking">
-                        <div class="bg-white rounded-3xl shadow-2xl p-6 sm:p-8 transform lg:rotate-1 hover:rotate-0 transition-transform duration-500 border-t-8 border-sams-gold text-gray-800">
-                            <div class="flex flex-col items-center text-center">
-                                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-sams-light-blue flex items-center justify-center text-2xl mb-3">
+                    <!-- Right Column: artwork -->
+                    <div class="w-full lg:w-1/2 max-w-xl lg:max-w-none mx-auto lg:mx-0">
+                        <img src="assets/images/hero-art.svg" alt="A globe linking the UK to Ghana and Jamaica, with a cargo ship and an aeroplane" width="900" height="700" fetchpriority="high" decoding="async" class="hero-art w-full h-auto">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Track & Trace card, sitting on a blue and gold wave -->
+            <div class="relative mt-2 sm:mt-4">
+                <svg class="pointer-events-none absolute inset-x-0 bottom-0 h-[78%] w-full" viewBox="0 0 1440 160" preserveAspectRatio="none" aria-hidden="true">
+                    <path d="M0 70 C240 20 480 120 760 80 C1040 40 1240 20 1440 60 L1440 160 L0 160 Z" fill="#0164D3"/>
+                    <path d="M0 104 C260 64 520 154 800 116 C1060 80 1260 74 1440 100 L1440 160 L0 160 Z" fill="#021B48"/>
+                    <path d="M0 62 C240 12 480 112 760 72 C1040 32 1240 12 1440 52" fill="none" stroke="#FBC704" stroke-width="5" vector-effect="non-scaling-stroke"/>
+                </svg>
+                <div id="tracking" class="relative z-10 mx-auto w-full max-w-5xl px-4 sm:px-6 pb-10 sm:pb-12 scroll-mt-40">
+                    <div class="rounded-3xl border-t-8 border-sams-gold bg-white p-5 shadow-2xl sm:p-6 lg:p-7 text-gray-800">
+                        <div class="flex flex-col lg:flex-row lg:items-center gap-5 lg:gap-8">
+                            <div class="flex items-center gap-4 lg:w-5/12">
+                                <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-sams-light-blue text-2xl">
                                     <i class="fa-solid fa-location-crosshairs"></i>
                                 </div>
-                                <h3 class="text-sams-blue font-heading font-bold text-2xl mb-1">
-                                    Track Your Shipment
-                                </h3>
-                                <p class="text-gray-500 text-xs sm:text-sm mb-6">Enter your tracking reference number below for real-time status updates.</p>
+                                <div>
+                                    <h3 class="text-sams-blue font-heading font-black text-xl sm:text-2xl leading-tight">Track Your Shipment</h3>
+                                    <p class="text-gray-600 text-xs sm:text-sm">Enter your tracking reference number for real-time status updates.</p>
+                                </div>
                             </div>
-                            
-                            <form id="tracking-form" class="flex flex-col space-y-4">
-                                <div class="relative w-full">
+                            <form id="tracking-form" class="flex w-full flex-col gap-3 sm:flex-row lg:flex-1">
+                                <div class="relative w-full sm:flex-1">
                                     <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                                         <i class="fa-solid fa-box text-lg"></i>
                                     </div>
                                     <input type="text" id="tracking-input" aria-label="Tracking reference number" required class="block w-full pl-11 pr-4 py-4 border-2 border-gray-200 rounded-xl leading-5 bg-gray-50 placeholder-gray-400 text-gray-900 font-semibold focus:outline-none focus:ring-2 focus:ring-sams-blue focus:border-sams-blue text-base min-h-[52px] transition-all" placeholder="e.g., SAM123456789UK">
                                 </div>
-                                <button type="submit" class="w-full flex items-center justify-center min-h-[52px] py-3.5 px-4 rounded-xl shadow-lg text-base sm:text-lg font-bold text-white bg-sams-blue hover:bg-sams-light-blue active:bg-sams-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sams-blue transition-colors">
+                                <button type="submit" class="w-full sm:w-auto sm:px-8 flex items-center justify-center min-h-[52px] py-3.5 px-4 rounded-xl shadow-lg text-base sm:text-lg font-bold text-white bg-sams-blue hover:bg-sams-light-blue active:bg-sams-blue focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sams-blue transition-colors">
                                     <i class="fa-solid fa-magnifying-glass mr-2"></i> Track Now
                                 </button>
                             </form>
-                            <div id="tracking-result" class="hidden mt-4 p-4 rounded-xl text-center font-semibold text-sm"></div>
                         </div>
+                        <div id="tracking-result" class="hidden mt-4 p-4 rounded-xl text-center font-semibold text-sm"></div>
                     </div>
                 </div>
             </div>
@@ -446,7 +469,7 @@
                     <div class="sm:col-span-2">
                         <label class="flex items-start gap-3 text-sm text-gray-600">
                             <input type="checkbox" id="booking-consent" name="consent" required class="mt-1 h-4 w-4 rounded border-gray-300 text-sams-blue focus:ring-sams-blue">
-                            <span>I agree that Sam's Logistics may use these details to contact me about this booking. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
+                            <span>I agree that Sam's Line Logistics may use these details to contact me about this booking. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
                         </label>
                     </div>
                     <div class="sm:col-span-2">
@@ -494,11 +517,11 @@
                         <div class="w-full lg:w-1/2 bg-gray-50 p-6 sm:p-10 flex items-center justify-center min-h-[300px]">
                             <div class="grid grid-cols-2 gap-4 w-full max-w-md justify-center items-center">
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/cardboard-boxes.webp" alt="Sam's Logistics branded cardboard shipping box" title="All sizes available" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/cardboard-boxes.webp" alt="Sam's Line Logistics branded cardboard shipping box" title="All sizes available" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform -rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Durable Boxes</span>
                                 </div>
                                 <div class="flex flex-col items-center">
-                                    <img src="assets/images/blue-shipping-burrels.webp" alt="Blue Sam's Logistics shipping barrels" title="Big, medium and small sizes available" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
+                                    <img src="assets/images/blue-shipping-burrels.webp" alt="Blue Sam's Line Logistics shipping barrels" title="Big, medium and small sizes available" width="512" height="512" loading="lazy" decoding="async" class="rounded-2xl shadow-lg border-2 border-white transform rotate-2 hover:rotate-0 transition-transform w-full h-auto object-cover">
                                     <span class="text-xs font-bold text-gray-500 mt-2">Heavy-Duty Barrels</span>
                                 </div>
                                 <div class="flex flex-col items-center">
@@ -513,6 +536,61 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- Standard boxes and shipping prices (static, edit here) -->
+        <section id="shipping-prices" class="py-12 sm:py-16 bg-white border-t border-gray-100">
+            <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+                <div class="text-center mb-8">
+                    <span class="text-eyebrow-blue font-bold uppercase tracking-widest text-xs">Price list</span>
+                    <h2 class="font-heading font-bold text-2xl sm:text-4xl text-sams-blue mt-2 mb-3">Standard Boxes &amp; Shipping to Ghana</h2>
+                    <p class="text-gray-600 text-sm sm:text-base">Our standard boxes and what it costs to ship each one door to door.</p>
+                </div>
+                <div class="overflow-hidden rounded-2xl border-2 border-sams-blue shadow-lg">
+                    <table class="w-full text-sm sm:text-base">
+                        <thead class="bg-sams-blue text-white">
+                            <tr>
+                                <th scope="col" class="px-4 py-3 text-left font-bold">Box</th>
+                                <th scope="col" class="px-4 py-3 text-right font-bold">Box price</th>
+                                <th scope="col" class="px-4 py-3 text-right font-bold text-sams-gold">Shipping to Ghana</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Box #38<span class="block text-xs font-normal text-gray-500">62 x 89 x 74 cm</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£17</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£150</td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Box #34<span class="block text-xs font-normal text-gray-500">62 x 84 x 72 cm</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£15</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£120</td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Box #29<span class="block text-xs font-normal text-gray-500">60 x 71 x 68 cm</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£12</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£100</td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Box #24<span class="block text-xs font-normal text-gray-500">60 x 60 x 60 cm</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£10</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£90</td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Tea cut box<span class="block text-xs font-normal text-gray-500">42 x 38 x 35 cm</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£7</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£60</td>
+                                </tr>
+                                <tr class="border-t border-gray-100">
+                                    <th scope="row" class="px-4 py-3 text-left font-bold text-sams-blue">Heavy-duty barrel<span class="block text-xs font-normal text-gray-500">Large</span></th>
+                                    <td class="px-4 py-3 text-right font-semibold text-gray-700 tabular-nums">£55</td>
+                                    <td class="px-4 py-3 text-right font-black text-sams-blue tabular-nums">£120</td>
+                                </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p class="mt-4 text-center text-xs sm:text-sm text-gray-500">Shipping prices are per box to Ghana. Jamaica or something else? <a href="#contact" class="font-bold text-sams-light-blue underline">Ask us for a quote</a>.</p>
             </div>
         </section>
 
@@ -577,7 +655,7 @@
                         <div class="sm:col-span-2">
                             <label class="flex items-start gap-3 text-sm text-gray-600">
                                 <input type="checkbox" id="supply-consent" name="consent" required class="mt-1 h-4 w-4 rounded border-gray-300 text-sams-blue focus:ring-sams-blue">
-                                <span>I agree that Sam's Logistics may use these details to contact me about this order. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
+                                <span>I agree that Sam's Line Logistics may use these details to contact me about this order. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
                             </label>
                         </div>
                         <div class="sm:col-span-2">
@@ -653,7 +731,7 @@
                                     <span>Message us on WhatsApp</span>
                                 </a>
                             </div>
-                            <img src="assets/images/ready-to-ship.webp" alt="Ready to ship your items with Sam's Logistics" title="Ready to ship your items" width="768" height="429" loading="lazy" decoding="async" class="mt-6 w-full max-w-sm self-center rounded-2xl object-contain">
+                            <img src="assets/images/ready-to-ship.webp" alt="Ready to ship your items with Sam's Line Logistics" title="Ready to ship your items" width="768" height="429" loading="lazy" decoding="async" class="mt-6 w-full max-w-sm self-center rounded-2xl object-contain">
                         </div>
 
                         <form id="contact-form" class="grid grid-cols-1 sm:grid-cols-2 gap-4" novalidate>
@@ -700,7 +778,7 @@
                             <div class="sm:col-span-2">
                                 <label class="flex items-start gap-3 text-sm text-gray-600">
                                     <input type="checkbox" id="contact-consent" name="consent" required class="mt-1 h-4 w-4 rounded border-gray-300 text-sams-blue focus:ring-sams-blue">
-                                    <span>I agree that Sam's Logistics may store these details and use them to reply to my message. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
+                                    <span>I agree that Sam's Line Logistics may store these details and use them to reply to my message. See our <a href="/privacy_policy" class="text-sams-light-blue underline">Privacy Policy</a>.</span>
                                 </label>
                             </div>
                             <div class="sm:col-span-2">
@@ -742,7 +820,7 @@
                 
                 <!-- Brand Col -->
                 <div class="w-full md:w-[calc(50%-20px)] lg:w-1/4 flex flex-col items-start">
-                    <img src="assets/images/sams-logo-sm.webp" alt="Sam's Logistics" width="294" height="190" loading="lazy" decoding="async" class="h-24 w-auto object-contain mb-3">
+                    <img src="assets/images/sams-line-logo-light.svg" alt="Sam's Line Logistics" width="759" height="200" loading="lazy" decoding="async" class="h-16 w-auto max-w-full object-contain mb-3">
                     <p class="text-blue-100 text-xs sm:text-sm leading-relaxed mb-6">
                         Providing fast, reliable, and affordable door-to-door shipping from the UK to Ghana and Jamaica.
                     </p>
@@ -782,7 +860,7 @@
                     <ul class="flex flex-col space-y-3 text-blue-100 text-xs sm:text-sm">
                         <li class="flex items-start gap-3">
                             <i class="fa-solid fa-map-location-dot mt-1 text-sams-gold"></i>
-                            <span>UK Headquarters<br>Logistics Hub, London, UK</span>
+                            <span>Registered Office<br>134 Parchmore Road, Thornton Heath, CR7 8LX</span>
                         </li>
                         <li class="flex items-center gap-3">
                             <i class="fa-solid fa-phone text-sams-gold"></i>
@@ -790,7 +868,7 @@
                         </li>
                         <li class="flex items-center gap-3">
                             <i class="fa-solid fa-envelope text-sams-gold"></i>
-                            <a href="mailto:samslogistics.gh@gmail.com" class="hover:text-white py-1">samslogistics.gh@gmail.com</a>
+                            <a href="mailto:info@samslinelogistics.co.uk" class="hover:text-white py-1">info@samslinelogistics.co.uk</a>
                         </li>
                     </ul>
                 </div>
@@ -798,7 +876,7 @@
 
             <div class="border-t border-white/20 pt-6 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
                 <p class="text-blue-200 text-xs sm:text-sm">
-                    &copy; <span id="current-year"></span> Sam's Logistics. All rights reserved.
+                    &copy; <span id="current-year"></span> Sam's Line Logistics. All rights reserved.
                 </p>
                 <div class="text-2xl sm:text-3xl font-script text-sams-gold transform -rotate-1">
                     "We deliver... You smile!"

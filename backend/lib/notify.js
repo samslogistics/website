@@ -9,7 +9,7 @@ import { SERVICES, FULFILMENT } from './constants.js';
 
 const TIMEOUT_MS = 3000;
 
-export const siteUrl = () => (process.env.SITE_URL || 'https://samslogistics.co.uk').replace(/\/+$/, '');
+export const siteUrl = () => (process.env.SITE_URL || 'https://samslinelogistics.co.uk').replace(/\/+$/, '');
 const adminUrl = () => `${siteUrl()}/admin`;
 
 export const gbp = (pence) => `£${(pence / 100).toFixed(2)}`;
@@ -30,7 +30,7 @@ async function sendEmail({ subject, text, replyTo }) {
   const key = process.env.RESEND_API_KEY;
   const to = process.env.ALERT_EMAIL_TO;
   if (!key || !to) return 'skipped';
-  const from = process.env.ALERT_EMAIL_FROM || "Sam's Logistics <onboarding@resend.dev>";
+  const from = process.env.ALERT_EMAIL_FROM || "Sam's Line Logistics <onboarding@resend.dev>";
   const payload = { from, to: [to], subject, text };
   if (replyTo) payload.reply_to = replyTo;
   await request('https://api.resend.com/emails', {
